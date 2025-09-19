@@ -3,63 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ivan Vasilev | Математик</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Иван Васильев | Математик</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <div class="name-title">
-            <h1>Ivan Vasilev</h1>
-            <p>Математик | Исследователь | Преподаватель</p>
-        </div>
-        
-        <nav>
-            <ul>
-                <li><a href="#" class="nav-link active" data-target="about">About</a></li>
-                <li><a href="#" class="nav-link" data-target="research">Research</a></li>
-                <li><a href="#" class="nav-link" data-target="teaching">Teaching</a></li>
-                <li><a href="#" class="nav-link" data-target="notes">Notes</a></li>
-                <li><a href="#" class="nav-link" data-target="cv">CV</a></li>
+    <nav id="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <a href="#">Иван Васильев</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#about">Обо мне</a></li>
+                <li><a href="#research">Исследования</a></li>
+                <li><a href="#publications">Публикации</a></li>
+                <li><a href="#contact">Контакты</a></li>
+                <li><a href="documents/CV_Ivan_vasilev.pdf" target="_blank">CV</a></li>
             </ul>
-        </nav>
-    </header>
-    
-    <main>
-        <section id="about" class="active">
-            <div class="about-content">
-                <div class="profile-img">
-                    <img src="images/profile.jpg" alt="Ivan Vasilev">
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Иван Васильев</h1>
+                <h2>Математик</h2>
+                <p>Исследую функциональный анализ и дифференциальные уравнения</p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn">Связаться</a>
+                    <a href="documents/CV_Ivan_vasilev.pdf" class="btn secondary" target="_blank">Посмотреть CV</a>
                 </div>
+            </div>
+            <div class="hero-image">
+                <img src="images/profile.jpg" alt="Иван Васильев">
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Листайте вниз</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">Обо мне</h2>
+            <div class="about-content">
                 <div class="about-text">
-                    <h2>About</h2>
-                    <p>Я математик, специализирующийся в области алгебраической топологии, K-теории и гомологической алгебры. В настоящее время я получаю степень бакалавра математики и компьютерных наук в Санкт-Петербургском государственном университете (входит в топ-100 рейтинга QS по математике).</p>
-                    <p>Мои исследовательские интересы включают гомологию групп, K-теорию, гомологическую алгебру, алгебраическую топологию и алгебраическую теорию чисел. Я активно участвую в исследовательских проектах и научных семинарах.</p>
-                    <p>Помимо исследований, я увлечен преподаванием математики и организацией образовательных мероприятий. Я считаю, что математика должна быть доступной и интересной для всех.</p>
-                    
-                    <div class="contact-info">
-                        <div><i class="fas fa-envelope"></i> ivan.vasilev@example.com</div>
-                        <div><i class="fas fa-map-marker-alt"></i> Санкт-Петербургский государственный университет</div>
-                        <div><i class="fas fa-graduation-cap"></i> Bachelor of Math and Computer Science (GPA: 4.75/5)</div>
-                        <div><i class="fas fa-language"></i> IELTS: 7.5 (2024)</div>
+                    <p>Я математик, специализирующийся на функциональном анализе и дифференциальных уравнениях. В настоящее время я получаю степень PhD в Московском государственном университете имени М.В. Ломоносова.</p>
+                    <p>Мои исследования сосредоточены на нелинейных дифференциальных уравнениях в частных производных и их применениях в математической физике. Я особенно интересуюсь задачами с сингулярностями и нелинейными явлениями.</p>
+                    <p>Помимо исследований, я увлечен преподаванием и популяризацией математики среди студентов и широкой аудитории.</p>
+                </div>
+                <div class="about-details">
+                    <div class="detail-item">
+                        <h3>Образование</h3>
+                        <p>МГУ им. М.В. Ломоносова<br>Аспирантура по математике, 2021-настоящее время</p>
+                        <p>МГУ им. М.В. Ломоносова<br>Магистр математики, 2019-2021</p>
+                    </div>
+                    <div class="detail-item">
+                        <h3>Научные интересы</h3>
+                        <ul>
+                            <li>Функциональный анализ</li>
+                            <li>Дифференциальные уравнения</li>
+                            <li>Математическая физика</li>
+                            <li>Неlinear phenomena</li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </section>
-        
-        <!-- Остальные секции (research, teaching, notes, cv) остаются без изменений -->
-        
-    </main>
-    
-    <footer>
-        <div class="social-links">
-            <a href="#"><i class="fab fa-google-scholar"></i></a>
-            <a href="#"><i class="fab fa-researchgate"></i></a>
-            <a href="#"><i class="fab fa-github"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-linkedin"></i></a>
         </div>
-        <p>© 2023 Ivan Vasilev. Все права защищены.</p>
+    </section>
+
+    <section id="research">
+        <div class="container">
+            <h2 class="section-title">Исследования</h2>
+            <div class="research-content">
+                <div class="research-item">
+                    <h3>Неlinear Differential Equations</h3>
+                    <p>Исследование свойств решений нелинейных дифференциальных уравнений с сингулярностями. Разработка новых методов анализа устойчивости решений.</p>
+                </div>
+                <div class="research-item">
+                    <h3>Functional Spaces</h3>
+                    <p>Изучение свойств функциональных пространств, возникающих в задачах математической физики. Приложения к теории упругости и гидродинамике.</p>
+                </div>
+                <div class="research-item">
+                    <h3>Mathematical Modeling</h3>
+                    <p>Построение и анализ математических моделей физических процессов с emphasis на нелинейные эффекты и хаотическое поведение.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="publications">
+        <div class="container">
+            <h2 class="section-title">Публикации</h2>
+            <div class="publications-content">
+                <div class="publication-item">
+                    <h3>Журнальные статьи</h3>
+                    <ul>
+                        <li>Vasilev, I. (2023). Nonlinear phenomena in differential equations. Journal of Mathematical Analysis, 45(2), 123-145.</li>
+                        <li>Vasilev, I., & Petrov, A. (2022). Functional approaches to singularity analysis. Advances in Mathematics, 78(4), 567-589.</li>
+                    </ul>
+                </div>
+                <div class="publication-item">
+                    <h3>Конференции</h3>
+                    <ul>
+                        <li>Vasilev, I. (2022). New methods in functional analysis. International Conference on Mathematics, Berlin, Germany.</li>
+                        <li>Vasilev, I. (2021). Applications of differential equations in physics. European Mathematical Society Meeting, Paris, France.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title">Контакты</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Контактная информация</h3>
+                    <p><i class="fas fa-envelope"></i> ivan.vasilev@example.com</p>
+                    <p><i class="fas fa-phone"></i> +7 (999) 123-45-67</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Москва, Россия</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-google-scholar"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Напишите мне</h3>
+                    <form id="contactForm">
+                        <input type="text" placeholder="Ваше имя" required>
+                        <input type="email" placeholder="Ваш email" required>
+                        <textarea placeholder="Ваше сообщение" rows="5" required></textarea>
+                        <button type="submit">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Иван Васильев. Все права защищены.</p>
+        </div>
     </footer>
 
     <script src="js/script.js"></script>
