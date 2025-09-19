@@ -1,643 +1,520 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ivan Vasilev | Математик</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --text-color: #333;
-            --light-bg: #f9f9f9;
-            --border-color: #e0e0e0;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-        
-        body {
-            color: var(--text-color);
-            line-height: 1.6;
-            background-color: #fff;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 30px 0;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 40px;
-        }
-        
-        .name-title h1 {
-            font-size: 2.2rem;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-        
-        .name-title p {
-            color: #777;
-            font-size: 1.1rem;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        nav li {
-            margin-left: 30px;
-        }
-        
-        nav a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: color 0.3s;
-            padding: 5px 0;
-            position: relative;
-        }
-        
-        nav a:hover {
-            color: var(--secondary-color);
-        }
-        
-        nav a.active {
-            color: var(--secondary-color);
-        }
-        
-        nav a.active:after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--secondary-color);
-        }
-        
-        section {
-            display: none;
-            margin-bottom: 60px;
-            animation: fadeIn 0.5s;
-        }
-        
-        section.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-            color: var(--primary-color);
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .about-content {
-            display: flex;
-            gap: 40px;
-        }
-        
-        .profile-img {
-            flex: 0 0 250px;
-        }
-        
-        .profile-img img {
-            width: 100%;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .about-text {
-            flex: 1;
-        }
-        
-        .about-text p {
-            margin-bottom: 20px;
-        }
-        
-        .contact-info {
-            margin-top: 30px;
-        }
-        
-        .contact-info div {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .contact-info i {
-            width: 24px;
-            margin-right: 10px;
-            color: var(--secondary-color);
-        }
-        
-        .publication {
-            margin-bottom: 25px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .publication:last-child {
-            border-bottom: none;
-        }
-        
-        .publication h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            color: var(--primary-color);
-        }
-        
-        .publication p {
-            margin-bottom: 10px;
-            color: #555;
-        }
-        
-        .publication-links a {
-            display: inline-block;
-            margin-right: 15px;
-            color: var(--secondary-color);
-            text-decoration: none;
-        }
-        
-        .publication-links a:hover {
-            text-decoration: underline;
-        }
-        
-        .course {
-            margin-bottom: 25px;
-        }
-        
-        .course h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            color: var(--primary-color);
-        }
-        
-        .note {
-            margin-bottom: 25px;
-        }
-        
-        .note h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-        }
-        
-        .note h3 a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        
-        .note h3 a:hover {
-            color: var(--secondary-color);
-        }
-        
-        .note-meta {
-            font-size: 0.9rem;
-            color: #777;
-            margin-bottom: 10px;
-        }
-        
-        .cv-section {
-            margin-bottom: 30px;
-        }
-        
-        .cv-section h3 {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            color: var(--primary-color);
-            padding-bottom: 5px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .cv-item {
-            margin-bottom: 15px;
-        }
-        
-        .cv-item h4 {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-        }
-        
-        .cv-item .date {
-            font-style: italic;
-            color: #777;
-            margin-bottom: 5px;
-        }
-        
-        .cv-download {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--secondary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
-            transition: background-color 0.3s;
-        }
-        
-        .cv-download:hover {
-            background-color: var(--primary-color);
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            margin-top: 50px;
-            border-top: 1px solid var(--border-color);
-            color: #777;
-        }
-        
-        .social-links {
-            margin-bottom: 15px;
-        }
-        
-        .social-links a {
-            display: inline-block;
-            margin: 0 10px;
-            color: #777;
-            font-size: 1.2rem;
-            transition: color 0.3s;
-        }
-        
-        .social-links a:hover {
-            color: var(--secondary-color);
-        }
-        
-        .talk-item, .school-item, .achievement-item {
-            margin-bottom: 15px;
-            padding-left: 20px;
-            position: relative;
-        }
-        
-        .talk-item:before, .school-item:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: var(--secondary-color);
-        }
-        
-        .achievement-item {
-            margin-bottom: 10px;
-        }
-        
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            nav ul {
-                margin-top: 20px;
-                justify-content: center;
-            }
-            
-            nav li {
-                margin: 0 10px;
-            }
-            
-            .about-content {
-                flex-direction: column;
-            }
-            
-            .profile-img {
-                margin: 0 auto 20px;
-                max-width: 250px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="name-title">
-            <h1>Ivan Vasilev</h1>
-            <p>Математик | Исследователь | Преподаватель</p>
-        </div>
-        
-        <nav>
-            <ul>
-                <li><a href="#" class="nav-link active" data-target="about">About</a></li>
-                <li><a href="#" class="nav-link" data-target="research">Research</a></li>
-                <li><a href="#" class="nav-link" data-target="teaching">Teaching</a></li>
-                <li><a href="#" class="nav-link" data-target="notes">Notes</a></li>
-                <li><a href="#" class="nav-link" data-target="cv">CV</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <main>
-        <section id="about" class="active">
-            <div class="about-content">
-                <div class="profile-img">
-                    <img src="https://placehold.co/400x500/e0e0e0/2c3e50?text=Ivan+Vasilev" alt="Ivan Vasilev">
-                </div>
-                <div class="about-text">
-                    <h2>About</h2>
-                    <p>Я математик, специализирующийся в области алгебраической топологии, K-теории и гомологической алгебры. В настоящее время я получаю степень бакалавра математики и компьютерных наук в Санкт-Петербургском государственном университете (входит в топ-100 рейтинга QS по математике).</p>
-                    <p>Мои исследовательские интересы включают гомологию групп, K-теорию, гомологическую алгебру, алгебраическую топологию и алгебраическую теорию чисел. Я активно участвую в исследовательских проектах и научных семинарах.</p>
-                    <p>Помимо исследований, я увлечен преподаванием математики и организацией образовательных мероприятий. Я считаю, что математика должна быть доступной и интересной для всех.</p>
-                    
-                    <div class="contact-info">
-                        <div><i class="fas fa-envelope"></i> ivan.vasilev@example.com</div>
-                        <div><i class="fas fa-map-marker-alt"></i> Санкт-Петербургский государственный университет</div>
-                        <div><i class="fas fa-graduation-cap"></i> Bachelor of Math and Computer Science (GPA: 4.75/5)</div>
-                        <div><i class="fas fa-language"></i> IELTS: 7.5 (2024)</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="research">
-            <h2>Research</h2>
-            <p>Мои исследования лежат на стыке алгебраической топологии, теории чисел и гомологической алгебры. Ниже представлены некоторые из моих исследовательских проектов.</p>
-            
-            <div class="publication">
-                <h3>Homology stability for linear groups</h3>
-                <p>Санкт-Петербургский государственный университет, 2025</p>
-                <p>Исследовательский проект в рамках бакалаврской программы</p>
-            </div>
-            
-            <div class="publication">
-                <h3>Torsion group of elliptic curve and volume numbers</h3>
-                <p>Санкт-Петербургский государственный университет, 2024</p>
-                <p>Исследовательский проект в области теории эллиптических кривых</p>
-            </div>
-            
-            <div class="publication">
-                <h3>Binomial sums modulo prime number</h3>
-                <p>Санкт-Петербургский государственный университет, 2023</p>
-                <p>Исследование биномиальных сумм по модулю простого числа</p>
-            </div>
-            
-            <div class="publication">
-                <h3>Substructural searching in molecular database</h3>
-                <p>Quantori, Астана, Казахстан (03.2022-08.2022)</p>
-                <p>Работа над поиском подструктур в молекулярных базах данных (прогресс под NDA)</p>
-            </div>
-            
-            <div class="publication">
-                <h3>Knots, braids, and knotted surface transformations</h3>
-                <p>Математическая мастерская в Математическом центре Академгородка, Новосибирск (07.2022-08.2022)</p>
-                <p>Исследование узлов, кос и преобразований заузленных поверхностей</p>
-            </div>
-        </section>
-        
-        <section id="teaching">
-            <h2>Teaching</h2>
-            <p>Я убежден, что преподавание — это не только передача знаний, но и вдохновение студентов на собственные открытия. Ниже представлена моя преподавательская и организаторская деятельность.</p>
-            
-            <div class="course">
-                <h3>Помощник преподавателя курса линейной алгебры</h3>
-                <p>Университет ИТМО, Санкт-Петербург (09.2024 - настоящее время)</p>
-            </div>
-            
-            <div class="course">
-                <h3>Руководитель образовательной программы "Гипотеза Каталана"</h3>
-                <p>Летняя школа факультета математики и компьютерных наук СПбГУ (06.2024)</p>
-            </div>
-            
-            <div class="course">
-                <h3>Организатор весенней школы Института Эйлера</h3>
-                <p>Алгебра, теория чисел и алгебраическая геометрия (05.2024)</p>
-            </div>
-            
-            <div class="course">
-                <h3>Главный организатор Студенческого семинара по теории чисел</h3>
-                <p>Санкт-Петербург (10.2023 - 03.2024)</p>
-            </div>
-            
-            <div class="course">
-                <h3>Руководитель образовательной программы "Геометрические методы в теории чисел"</h3>
-                <p>Летняя школа факультета математики и компьютерных наук СПбГУ (06.2023)</p>
-            </div>
-            
-            <div class="course">
-                <h3>Член жюри регионального этапа Всероссийской олимпиады по математике</h3>
-                <p>Тюмень (02.2023)</p>
-            </div>
-            
-            <div class="course">
-                <h3>Преподаватель математики</h3>
-                <p>Сигма олимпиадная математическая школа, Тюмень (09.2020-08.2021)</p>
-            </div>
-        </section>
-        
-        <section id="notes">
-            <h2>Notes</h2>
-            <p>Здесь я делюсь заметками, учебными материалами и мыслями о математике и преподавании.</p>
-            
-            <div class="note">
-                <h3><a href="#">Steenrod operations and first stable homotopy group</a></h3>
-                <div class="note-meta">Доклад на студенческом семинаре по стабильной гомотопии (12.2024)</div>
-                <p>Конспект доклада об операциях Стинрода и первой стабильной группе гомотопий.</p>
-            </div>
-            
-            <div class="note">
-                <h3><a href="#">Introductory course in Algebraic K-theory</a></h3>
-                <div class="note-meta">Летний математический лекторий (07.2024)</div>
-                <p>Вводный курс по алгебраической K-теории с примерами и упражнениями.</p>
-            </div>
-            
-            <div class="note">
-                <h3><a href="#">Heights on elliptic curves and Mordell–Weil theorem</a></h3>
-                <div class="note-meta">Курс по модулярным формам и эллиптическим кривым (12.2023)</div>
-                <p>Заметки о высотах на эллиптических кривых и теореме Морделла-Вейля.</p>
-            </div>
-            
-            <div class="note">
-                <h3><a href="#">Equations in finite fields. Chevalley–Warning theorem.</a></h3>
-                <div class="note-meta">Студенческий семинар по теории чисел (10.2023)</div>
-                <p>Материалы доклада об уравнениях в конечных полях и теореме Шевалле-Варнинга.</p>
-            </div>
-        </section>
-        
-        <section id="cv">
-            <h2>Curriculum Vitae</h2>
-            <a href="CV_Ivan_vasilev (22).pdf" class="cv-download"><i class="fas fa-download"></i> Скачать CV (PDF)</a>
-            
-            <div class="cv-section">
-                <h3>Образование</h3>
-                <div class="cv-item">
-                    <h4>Бакалавр математики и компьютерных наук</h4>
-                    <div class="date">2021 - 2025</div>
-                    <p>Санкт-Петербургский государственный университет (топ-100 рейтинга QS по математике)</p>
-                    <p>Средний балл: 4.75/5</p>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Физико-математическая школа Тюменской области</h4>
-                    <div class="date">до 2021</div>
-                    <p>4-е место в рейтинге RAEX</p>
-                </div>
-            </div>
-            
-            <div class="cv-section">
-                <h3>Навыки</h3>
-                <div class="cv-item">
-                    <h4>Языки программирования</h4>
-                    <p>Python, C++ (базовый)</p>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Решение задач</h4>
-                    <p>Олимпиадная математика, спортивное программирование</p>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Языки</h4>
-                    <p>Русский (родной), Английский (IELTS 7.5, 2024)</p>
-                </div>
-            </div>
-            
-            <div class="cv-section">
-                <h3>Научные интересы</h3>
-                <div class="cv-item">
-                    <p>Гомология групп, K-теория, Гомологическая алгебра, Алгебраическая топология, Алгебраическая теория чисел</p>
-                </div>
-            </div>
-            
-            <div class="cv-section">
-                <h3>Достижения</h3>
-                <div class="cv-item">
-                    <h4>Стипендия программы "Родные города" (ПАО "Газпром")</h4>
-                    <div class="date">2021-2024</div>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Благодарность от Института Эйлера за семинар по теории чисел</h4>
-                    <div class="date">2023</div>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Международная Жаутыковская олимпиада по математике</h4>
-                    <div class="date">2021</div>
-                    <p>Серебряная медаль (финал)</p>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Геометрическая олимпиада имени И.Ф. Шарыгина</h4>
-                    <div class="date">2019</div>
-                    <p>Похвальная грамота (финал)</p>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Всероссийская олимпиада школьников по математике</h4>
-                    <div class="date">2019-2021</div>
-                    <p>Призер регионального этапа (2019, 2020, 2021)</p>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Олимпиада СПбГУ по математике</h4>
-                    <div class="date">2020</div>
-                    <p>Призер (финал)</p>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Олимпиада по математике Санкт-Петербурга</h4>
-                    <div class="date">2021</div>
-                    <p>Призер (финал)</p>
-                </div>
-            </div>
-            
-            <div class="cv-section">
-                <h3>Школы и конференции</h3>
-                <div class="cv-item">
-                    <h4>Современные направления теории чисел</h4>
-                    <div class="date">07.2024</div>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Весенняя школа Института Эйлера по алгебре, теории чисел и алгебраической геометрии</h4>
-                    <div class="date">05.2024</div>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Осенняя школа Института Эйлера по алгебре</h4>
-                    <div class="date">11.2023</div>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Рамануджан и Эйлер: Разбиения, mock theta функции и q-ряды</h4>
-                    <div class="date">07.2022</div>
-                </div>
-                
-                <div class="cv-item">
-                    <h4>Научная программа по математике в Сириусе</h4>
-                    <div class="date">05.2021</div>
-                    <p>Участник научной группы (максимальный прогресс в проекте о самонепересекающихся блужданиях)</p>
-                </div>
-            </div>
-        </section>
-    </main>
-    
-    <footer>
-        <div class="social-links">
-            <a href="#"><i class="fab fa-google-scholar"></i></a>
-            <a href="#"><i class="fab fa-researchgate"></i></a>
-            <a href="#"><i class="fab fa-github"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-linkedin"></i></a>
-        </div>
-        <p>© 2023 Ivan Vasilev. Все права защищены.</p>
-    </footer>
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('section');
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Убираем активный класс у всех ссылок и секций
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    sections.forEach(s => s.classList.remove('active'));
-                    
-                    // Добавляем активный класс к текущей ссылке
-                    this.classList.add('active');
-                    
-                    // Показываем соответствующую секцию
-                    const targetId = this.getAttribute('data-target');
-                    document.getElementById(targetId).classList.add('active');
-                    
-                    // Обновляем URL
-                    history.pushState(null, null, `#${targetId}`);
-                });
-            });
-            
-            // Проверяем хэш при загрузке страницы
-            if (window.location.hash) {
-                const targetId = window.location.hash.substring(1);
-                const targetLink = document.querySelector(`.nav-link[data-target="${targetId}"]`);
-                
-                if (targetLink) {
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    sections.forEach(s => s.classList.remove('active'));
-                    
-                    targetLink.classList.add('active');
-                    document.getElementById(targetId).classList.add('active');
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --text-color: #333;
+    --light-bg: #f9f9f9;
+    --dark-bg: #2c3e50;
+    --white: #fff;
+    --gray: #95a5a6;
+    --light-gray: #ecf0f1;
+    --spacing: 8px;
+    --border-radius: 4px;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Navigation */
+#navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.nav-links li {
+    margin-left: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--secondary-color);
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-color);
+    margin: 2px 0;
+    transition: all 0.3s ease;
+}
+
+/* Hero section */
+#hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 100px 20px 60px;
+    background: linear-gradient(135deg, var(--light-bg) 0%, var(--white) 100%);
+}
+
+.hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.hero-text {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.hero-text h1 {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.hero-text h2 {
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+.hero-text p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: var(--text-color);
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.btn.secondary {
+    background-color: transparent;
+    border: 2px solid var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+.btn.secondary:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.hero-image {
+    flex: 1;
+    text-align: center;
+}
+
+.hero-image img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.scroll-indicator {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--gray);
+    animation: bounce 2s infinite;
+}
+
+.scroll-indicator i {
+    font-size: 1.5rem;
+    display: block;
+    margin-top: 10px;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Sections common styles */
+section {
+    padding: 100px 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: var(--primary-color);
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: var(--secondary-color);
+}
+
+/* About section */
+#about {
+    background-color: var(--white);
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+}
+
+.about-text p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.about-details {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.detail-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.detail-item p, .detail-item li {
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.detail-item ul {
+    list-style-type: none;
+}
+
+.detail-item li::before {
+    content: "•";
+    color: var(--secondary-color);
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+/* Research section */
+#research {
+    background-color: var(--light-bg);
+}
+
+.research-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.research-item {
+    background-color: var(--white);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.research-item:hover {
+    transform: translateY(-5px);
+}
+
+.research-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.research-item p {
+    color: var(--text-color);
+    line-height: 1.7;
+}
+
+/* Publications section */
+#publications {
+    background-color: var(--white);
+}
+
+.publications-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+}
+
+.publication-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.publication-item ul {
+    list-style-type: none;
+}
+
+.publication-item li {
+    margin-bottom: 20px;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.publication-item li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--secondary-color);
+}
+
+/* Contact section */
+#contact {
+    background-color: var(--light-bg);
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+}
+
+.contact-info h3, .contact-form h3 {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    color: var(--primary-color);
+}
+
+.contact-info p {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.contact-info i {
+    margin-right: 15px;
+    color: var(--secondary-color);
+    width: 20px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-3px);
+}
+
+.contact-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-form input, .contact-form textarea {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+
+.contact-form button {
+    padding: 15px;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.contact-form button:hover {
+    background-color: var(--primary-color);
+}
+
+/* Footer */
+footer {
+    background-color: var(--dark-bg);
+    color: white;
+    text-align: center;
+    padding: 30px 0;
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+    .hero-content {
+        flex-direction: column-reverse;
+        text-align: center;
+    }
+    
+    .hero-text {
+        padding-right: 0;
+        margin-top: 40px;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+    }
+    
+    .about-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .nav-links li {
+        margin: 15px 0;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-text h2 {
+        font-size: 1.5rem;
+    }
+    
+    .publications-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-image img {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .research-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+}
