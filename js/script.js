@@ -52,14 +52,14 @@ if (contactForm) {
         e.preventDefault();
         
         // In a real application, you would send the form data to a server here
-        alert('Спасибо за ваше сообщение! Я свяжусь с вами в ближайшее время.');
+        alert('Thank you for your message! I will get back to you soon.');
         this.reset();
     });
 }
 
 // Animation on scroll
 function animateOnScroll() {
-    const elements = document.querySelectorAll('.research-item, .publication-item, .detail-item');
+    const elements = document.querySelectorAll('.research-item, .talk-item, .teaching-item, .achievement-item, .education-item');
     
     elements.forEach(element => {
         const elementPosition = element.getBoundingClientRect().top;
@@ -73,7 +73,7 @@ function animateOnScroll() {
 }
 
 // Initialize elements for animation
-document.querySelectorAll('.research-item, .publication-item, .detail-item').forEach(item => {
+document.querySelectorAll('.research-item, .talk-item, .teaching-item, .achievement-item, .education-item').forEach(item => {
     item.style.opacity = 0;
     item.style.transform = 'translateY(20px)';
     item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
