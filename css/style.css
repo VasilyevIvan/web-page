@@ -88,6 +88,8 @@ body {
     transition: all 0.3s ease;
 }
 
+/* ... (previous CSS rules remain the same up to the Hero Section) ... */
+
 /* Hero section */
 #hero {
     min-height: 100vh;
@@ -103,41 +105,45 @@ body {
 .hero-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end; /* Align text to the right */
     width: 100%;
     max-width: 1200px;
+    position: relative;
 }
 
+/* START: New styles for the image cluster */
 .hero-image-cluster {
     position: absolute;
     top: 40px;
     left: 40px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse; /* Build the pyramid from the bottom up */
     align-items: flex-start;
 }
 
 .image-row {
     display: flex;
-    margin-top: -10px; /* Overlap rows slightly */
+    margin-bottom: -20px; /* Overlap rows vertically for a layered look */
 }
 
-.image-row img {
-    width: 100px;
-    height: 100px;
+.hero-image-cluster img {
+    width: 80px; /* Reduced size (original was ~300px) */
+    height: 80px;
     object-fit: cover;
-    filter: grayscale(100%);
-    margin-right: -10px; /* Overlap images horizontally */
-    border: 2px solid var(--secondary-color);
+    filter: grayscale(100%); /* Apply monochrome filter */
+    margin-right: -20px; /* Overlap images horizontally */
+    border: 3px solid var(--secondary-color); /* Create separation between layered planes */
 }
 
-.row-3 { margin-left: 50px; }
-.row-2 { margin-left: 100px; }
-.row-1 { margin-left: 150px; }
-
+/* Indent each row to create the pyramid shape */
+.row-3 { margin-left: 30px; }
+.row-2 { margin-left: 60px; }
+.row-1 { margin-left: 90px; }
+/* END: New styles for the image cluster */
 
 .hero-text {
-    padding-left: 450px; /* Push text to the right of the image cluster */
+    text-align: right;
+    max-width: 60%;
 }
 
 .hero-text h1 {
@@ -150,15 +156,59 @@ body {
 }
 
 .hero-text h2 {
-    font-size: 1rem; /* Significantly reduced font size */
+    font-size: 1rem;
     font-weight: 700;
     color: var(--text-color);
-    margin-top: 5px; /* Minimal spacing */
+    margin-top: 5px;
     letter-spacing: 1px;
     text-transform: uppercase;
 }
 
 
+/* ... (rest of the CSS rules remain the same) ... */
+
+/* Responsive adjustments for the new cluster */
+@media (max-width: 992px) {
+    #hero {
+        align-items: flex-start;
+        padding-top: 120px;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: flex-start;
+    }
+
+    .hero-image-cluster {
+        position: static; /* Let the cluster sit naturally in the flow on smaller screens */
+        margin-bottom: 40px;
+        align-items: center;
+    }
+    
+    .hero-text {
+        text-align: center;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-image-cluster img {
+        width: 60px;
+        height: 60px;
+        margin-right: -15px;
+        margin-bottom: -15px;
+    }
+    
+    .row-3 { margin-left: 22.5px; }
+    .row-2 { margin-left: 45px; }
+    .row-1 { margin-left: 67.5px; }
+    
+    .hero-text h1 {
+        font-size: 2.8rem;
+    }
+}
 /* Sections common styles */
 main {
     background-color: var(--white);
