@@ -15,6 +15,7 @@
     --white: #fff;
     --gray: #999999;
     --light-gray: #e0e0e0;
+    --navbar-height: 80px; /* Define navbar height as a variable */
     --border-radius: 0;
 }
 
@@ -37,16 +38,20 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
+    height: var(--navbar-height);
     background-color: var(--secondary-color);
     z-index: 1000;
     transition: all 0.3s ease;
     border-bottom: 2px solid var(--primary-color);
+    display: flex;
+    align-items: center;
 }
 
 .nav-content {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 20px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -65,7 +70,7 @@ body {
     text-decoration: none;
     color: var(--primary-color);
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
     transition: color 0.3s ease;
     text-transform: uppercase;
 }
@@ -88,62 +93,60 @@ body {
     transition: all 0.3s ease;
 }
 
-/* ... (previous CSS rules remain the same up to the Hero Section) ... */
-
 /* Hero section */
 #hero {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: center;
     background-color: var(--secondary-color);
-    overflow: hidden;
     position: relative;
-    padding: 40px;
+    padding-top: var(--navbar-height); /* Push content down to account for fixed navbar */
 }
 
 .hero-content {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* Align text to the right */
+    justify-content: flex-end;
     width: 100%;
     max-width: 1200px;
-    position: relative;
+    margin: 0 auto;
+    padding: 0 40px;
 }
 
-/* START: New styles for the image cluster */
 .hero-image-cluster {
     position: absolute;
-    top: 40px;
-    left: 40px;
+    top: var(--navbar-height); /* Position flush under the navbar */
+    left: 0; /* Position flush to the left edge */
     display: flex;
-    flex-direction: column-reverse; /* Build the pyramid from the bottom up */
+    flex-direction: column-reverse;
     align-items: flex-start;
+    z-index: 10;
 }
 
 .image-row {
     display: flex;
-    margin-bottom: -20px; /* Overlap rows vertically for a layered look */
+    margin-bottom: -30px; /* Adjusted overlap for larger size */
 }
 
 .hero-image-cluster img {
-    width: 80px; /* Reduced size (original was ~300px) */
-    height: 80px;
+    width: 120px; /* Increased size by 150% (80px * 1.5) */
+    height: 120px;
     object-fit: cover;
-    filter: grayscale(100%); /* Apply monochrome filter */
-    margin-right: -20px; /* Overlap images horizontally */
-    border: 3px solid var(--secondary-color); /* Create separation between layered planes */
+    filter: grayscale(100%);
+    margin-right: -30px; /* Adjusted overlap for larger size */
+    border: 4px solid var(--secondary-color);
 }
 
-/* Indent each row to create the pyramid shape */
-.row-3 { margin-left: 30px; }
-.row-2 { margin-left: 60px; }
-.row-1 { margin-left: 90px; }
-/* END: New styles for the image cluster */
+/* Indent each row to create the pyramid shape, adjusted for new size */
+.row-3 { margin-left: 45px; }
+.row-2 { margin-left: 90px; }
+.row-1 { margin-left: 135px; }
 
 .hero-text {
     text-align: right;
-    max-width: 60%;
+    max-width: 55%; /* Adjusted to give more space for the larger cluster */
+    z-index: 20;
+    position: relative;
 }
 
 .hero-text h1 {
@@ -164,51 +167,6 @@ body {
     text-transform: uppercase;
 }
 
-
-/* ... (rest of the CSS rules remain the same) ... */
-
-/* Responsive adjustments for the new cluster */
-@media (max-width: 992px) {
-    #hero {
-        align-items: flex-start;
-        padding-top: 120px;
-    }
-
-    .hero-content {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        justify-content: flex-start;
-    }
-
-    .hero-image-cluster {
-        position: static; /* Let the cluster sit naturally in the flow on smaller screens */
-        margin-bottom: 40px;
-        align-items: center;
-    }
-    
-    .hero-text {
-        text-align: center;
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 576px) {
-    .hero-image-cluster img {
-        width: 60px;
-        height: 60px;
-        margin-right: -15px;
-        margin-bottom: -15px;
-    }
-    
-    .row-3 { margin-left: 22.5px; }
-    .row-2 { margin-left: 45px; }
-    .row-1 { margin-left: 67.5px; }
-    
-    .hero-text h1 {
-        font-size: 2.8rem;
-    }
-}
 /* Sections common styles */
 main {
     background-color: var(--white);
@@ -273,6 +231,7 @@ section {
     margin-bottom: 10px;
     color: var(--primary-color);
     text-transform: uppercase;
+    font-weight: 700;
 }
 
 .research-list .date {
@@ -283,6 +242,10 @@ section {
 }
 
 /* Talks section */
+#talks {
+    background-color: var(--white);
+}
+
 .talks-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -300,222 +263,9 @@ section {
     margin-bottom: 10px;
     color: var(--primary-color);
     text-transform: uppercase;
+    font-weight: 700;
 }
 
 .talk-item .event {
-    font-weight: 500;
+    font-weight: 700;
     margin-bottom: 5px;
-}
-
-.talk-item .date {
-    color: var(--primary-color);
-    font-style: italic;
-}
-
-/* Teaching section */
-#teaching {
-    background-color: var(--light-bg);
-}
-
-.teaching-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px;
-}
-
-.teaching-item {
-    background-color: var(--white);
-    padding: 25px;
-    border: 2px solid var(--primary-color);
-}
-
-.teaching-item h3 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: var(--primary-color);
-    text-transform: uppercase;
-}
-
-.teaching-item .institution {
-    font-weight: 500;
-    margin-bottom: 5px;
-}
-
-.teaching-item .date {
-    color: var(--primary-color);
-    font-style: italic;
-}
-
-/* Achievements section */
-.achievements-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-}
-
-.achievement-item {
-    background-color: var(--light-bg);
-    padding: 25px;
-    border: 2px solid var(--primary-color);
-    text-align: center;
-}
-
-.achievement-item i {
-    font-size: 2.5rem;
-    color: var(--primary-color);
-    margin-bottom: 15px;
-}
-
-.achievement-item h3 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: var(--primary-color);
-    text-transform: uppercase;
-}
-
-/* Contact section */
-#contact {
-    background-color: var(--light-bg);
-}
-
-.contact-info h3 {
-    font-size: 1.5rem;
-    margin-bottom: 25px;
-    color: var(--primary-color);
-    text-align: center;
-    text-transform: uppercase;
-}
-
-.contact-info p {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.contact-info i {
-    margin-right: 15px;
-    color: var(--primary-color);
-    width: 20px;
-}
-
-.social-links {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
-    justify-content: center;
-}
-
-.social-links a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.social-links a:hover {
-    background-color: var(--accent-color);
-}
-
-/* Footer */
-footer {
-    background-color: var(--dark-bg);
-    color: white;
-    text-align: center;
-    padding: 30px 0;
-}
-
-/* Responsive design */
-@media (max-width: 992px) {
-    #hero {
-        align-items: flex-start;
-        padding-top: 120px;
-    }
-
-    .hero-content {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .hero-image-cluster {
-        position: static;
-        margin-bottom: 40px;
-        align-items: center;
-    }
-
-    .row-3 { margin-left: 25px; }
-    .row-2 { margin-left: 50px; }
-    .row-1 { margin-left: 75px; }
-
-    .hero-text {
-        padding-left: 0;
-    }
-}
-
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-        position: absolute;
-        top: 80px;
-        left: 0;
-        width: 100%;
-        background-color: white;
-        flex-direction: column;
-        padding: 20px;
-        border-top: 2px solid var(--primary-color);
-    }
-    
-    .nav-links.active {
-        display: flex;
-    }
-    
-    .nav-links li {
-        margin: 15px 0;
-        text-align: center;
-    }
-    
-    .hamburger {
-        display: flex;
-    }
-    
-    .hero-text h1 {
-        font-size: 3.5rem;
-    }
-    
-    .hero-text h2 {
-        font-size: 0.9rem;
-    }
-    
-    .section-title {
-        font-size: 2.5rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .hero-image-cluster img {
-        width: 70px;
-        height: 70px;
-    }
-    
-    .row-3 { margin-left: 17.5px; }
-    .row-2 { margin-left: 35px; }
-    .row-1 { margin-left: 52.5px; }
-    
-    .hero-text h1 {
-        font-size: 2.8rem;
-    }
-
-    .section-title {
-        font-size: 2rem;
-    }
-    
-    section {
-        padding: 80px 0;
-    }
-}
