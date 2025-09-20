@@ -15,13 +15,16 @@ document.querySelectorAll('.nav-links a').forEach(link => {
     });
 });
 
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+// Enable scrolling when navigating to sections
+document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
         e.preventDefault();
         
         const targetId = this.getAttribute('href');
         if (targetId === '#') return;
+        
+        // Enable scrolling
+        document.body.classList.remove('no-scroll');
         
         const targetElement = document.querySelector(targetId);
         if (targetElement) {
@@ -30,6 +33,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 behavior: 'smooth'
             });
         }
+    });
+});
+
+// Scroll to top when clicking on logo
+document.querySelector('.scroll-top').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.body.classList.add('no-scroll');
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
     });
 });
 
@@ -43,23 +56,32 @@ window.addEventListener('scroll', () => {
         navbar.style.background = 'rgba(255, 255, 255, 0.95)';
         navbar.style.boxShadow = 'none';
     }
+    
+    // Enable scrolling if user manually scrolls
+    if (window.scrollY > 50) {
+        document.body.classList.remove('no-scroll');
+    } else {
+        document.body.classList.add('no-scroll');
+    }
 });
 
-// Form submission handling
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+// Prevent scrolling with mouse wheel on hero section
+document.getElementById('hero').addEventListener('wheel', function(e) {
+    if (document.body.classList.contains('no-scroll')) {
         e.preventDefault();
-        
-        // In a real application, you would send the form data to a server here
-        alert('Thank you for your message! I will get back to you soon.');
-        this.reset();
-    });
-}
+    }
+});
+
+// Prevent scrolling with touch events on hero section
+document.getElementById('hero').addEventListener('touchmove', function(e) {
+    if (document.body.classList.contains('no-scroll')) {
+        e.preventDefault();
+    }
+}, { passive: false });
 
 // Animation on scroll
 function animateOnScroll() {
-    const elements = document.querySelectorAll('.research-item, .talk-item, .teaching-item, .achievement-item, .education-item');
+    const elements = document.querySelectorAll('.research-list li, .talk-item, .teaching-item, .achievement-item');
     
     elements.forEach(element => {
         const elementPosition = element.getBoundingClientRect().top;
@@ -73,7 +95,7 @@ function animateOnScroll() {
 }
 
 // Initialize elements for animation
-document.querySelectorAll('.research-item, .talk-item, .teaching-item, .achievement-item, .education-item').forEach(item => {
+document.querySelectorAll('.research-list li, .talk-item, .teaching-item, .achievement-item').forEach(item => {
     item.style.opacity = 0;
     item.style.transform = 'translateY(20px)';
     item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
