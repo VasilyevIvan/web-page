@@ -32,17 +32,6 @@
 
     <header id="hero">
         <div class="hero-content">
-            <!-- Container for floating images -->
-            <div id="floating-images-container">
-                <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
-                <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
-                <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
-                <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
-                <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
-                <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
-            </div>
-            <!-- End NEW -->
-
             <div class="hero-text">
                 <h1>Vanya Vasilev</h1>
                 <h2>Mathematics Student & Researcher</h2>
@@ -50,7 +39,18 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content"> <!-- Added an ID for easier JS targeting -->
+        <!-- MOVED: Container for floating images now inside main -->
+        <div id="floating-images-container">
+            <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
+            <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
+            <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
+            <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
+            <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
+            <div class="floating-image"><img src="images/profile.jpg" alt="Vanya Vasilev profile photo"></div>
+        </div>
+        <!-- END MOVED -->
+
         <section id="about">
             <div class="container">
                 <h2 class="section-title">About Me</h2>
