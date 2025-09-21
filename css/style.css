@@ -119,37 +119,6 @@ body {
     padding: 0 40px;
 }
 
-/* REMOVE the old .hero-image-cluster styles */
-/*
-.hero-image-cluster {
-    position: absolute;
-    top: var(--navbar-height);
-    left: 0;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: flex-start;
-    z-index: 10;
-    gap: 5px;
-}
-
-.image-row {
-    display: flex;
-    gap: 5px;
-}
-
-.hero-image-cluster img {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    filter: grayscale(100%);
-    background-color: var(--light-gray);
-}
-
-.row-3 { margin-left: 62.5px; }
-.row-2 { margin-left: 125px; }
-.row-1 { margin-left: 187.5px; }
-*/
-
 /* NEW: Floating images container */
 #floating-images-container {
     position: absolute; /* Relative to #hero */
@@ -168,7 +137,7 @@ body {
     height: var(--floating-img-height); /* Scaled height */
     pointer-events: none; /* Also for individual images */
     opacity: 0; /* Hidden initially, will fade in with JS */
-    transition: opacity 0.5s ease-out; /* Smooth fade in */
+    transition: opacity 0.5s ease-out, transform 0.5s ease; /* Smooth fade in and transform */
 }
 
 .floating-image img {
@@ -186,9 +155,9 @@ body {
     max-width: 55%;
     z-index: 20; /* Keep hero-text above floating images */
     position: relative;
-    /* Add padding for collision detection buffer */
-    padding: 20px; /* This will be the collision buffer for the text */
-    background-color: rgba(255, 255, 255, 0.0); /* Transparent background to easily calculate text bounds */
+    /* Add padding for collision detection buffer, handled in JS via TEXT_BUFFER */
+    padding: 20px; 
+    background-color: rgba(255, 255, 255, 0.0); /* Transparent background for collision calculation */
 }
 
 .hero-text h1 {
