@@ -20,7 +20,8 @@
 
     /* New variables for floating images */
     --floating-img-size-base: 120px; /* Original size before scaling */
-    --floating-img-scale-factor: 0.667; /* 66.7% scale */
+    /* EDITED: Reduced by a factor of 10 (0.1) from the original 66.7% scaling */
+    --floating-img-scale-factor: 0.0667; /* 6.67% of original 120px, or 10% of previous scaled size */
     --floating-img-width: calc(var(--floating-img-size-base) * var(--floating-img-scale-factor)); /* Calculated scaled width */
     --floating-img-height: calc(var(--floating-img-size-base) * var(--floating-img-scale-factor)); /* Calculated scaled height */
 }
