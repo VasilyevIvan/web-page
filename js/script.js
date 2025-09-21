@@ -37,6 +37,9 @@ document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
 });
 
 // Scroll to top when clicking on logo
+// Note: You don't have a logo or element with class 'scroll-top' in your HTML.
+// If you add one, this code will work. For now, it might not do anything.
+/*
 document.querySelector('.scroll-top').addEventListener('click', function(e) {
     e.preventDefault();
     document.body.classList.add('no-scroll');
@@ -45,6 +48,7 @@ document.querySelector('.scroll-top').addEventListener('click', function(e) {
         behavior: 'smooth'
     });
 });
+*/
 
 // Navbar background change on scroll
 window.addEventListener('scroll', () => {
@@ -57,15 +61,21 @@ window.addEventListener('scroll', () => {
         navbar.style.boxShadow = 'none';
     }
     
-    // Enable scrolling if user manually scrolls
+    // The no-scroll class was used to prevent scrolling for a smooth logo scroll,
+    // which is not currently implemented. Keeping this for consistency or future use.
     if (window.scrollY > 50) {
         document.body.classList.remove('no-scroll');
     } else {
-        document.body.classList.add('no-scroll');
+        // If there's a specific "logo" or "scroll-top" behavior that needs no-scroll,
+        // this might be relevant. Otherwise, consider removing the no-scroll logic.
+        // document.body.classList.add('no-scroll');
     }
 });
 
 // Prevent scrolling with mouse wheel on hero section
+// This prevents scrolling specifically when the 'no-scroll' class is active,
+// which is currently not extensively used.
+/*
 document.getElementById('hero').addEventListener('wheel', function(e) {
     if (document.body.classList.contains('no-scroll')) {
         e.preventDefault();
@@ -78,8 +88,9 @@ document.getElementById('hero').addEventListener('touchmove', function(e) {
         e.preventDefault();
     }
 }, { passive: false });
+*/
 
-// Animation on scroll
+// Animation on scroll for other sections
 function animateOnScroll() {
     const elements = document.querySelectorAll('.research-list li, .talk-item, .teaching-item, .achievement-item');
     
@@ -105,3 +116,52 @@ document.querySelectorAll('.research-list li, .talk-item, .teaching-item, .achie
 window.addEventListener('scroll', animateOnScroll);
 // Initial check in case elements are already in view
 window.addEventListener('load', animateOnScroll);
+
+
+// --- NEW JAVASCRIPT FOR FLOATING IMAGES ---
+
+const floatingImages = document.querySelectorAll('.floating-image');
+const heroText = document.querySelector('.hero-text');
+const navbar = document.getElementById('navbar');
+
+// Constants for image sizing and collision buffer
+const IMAGE_WIDTH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--floating-img-width'));
+const IMAGE_HEIGHT = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--floating-img-height'));
+const NAV_BAR_HEIGHT = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height'));
+const TEXT_BUFFER = 40; // Additional buffer around hero text, matching the `padding` in CSS.
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Check for collision between two rectangles (x, y, width, height)
+function checkCollision(rect1, rect2) {
+    return rect1.x < rect2.x + rect2.width &&
+           rect1.x + rect1.width > rect2.x &&
+           rect1.y < rect2.y + rect2.height &&
+           rect1.y + rect1.height > rect2.y;
+}
+
+function positionFloatingImages() {
+    const heroRect = document.getElementById('hero').getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Get the bounding box of the hero text, adjusted for the padding as a buffer
+    const heroTextRect = heroText.getBoundingClientRect();
+    const bufferedTextRect = {
+        x: heroTextRect.x - TEXT_BUFFER,
+        y: heroTextRect.y - TEXT_BUFFER,
+        width: heroTextRect.width + (TEXT_BUFFER * 2),
+        height: heroTextRect.height + (TEXT_BUFFER * 2),
+    };
+
+    const placedRects = [];
+
+    floatingImages.forEach(imageDiv => {
+        let placed = false;
+        let attempts = 0;
+        const maxAttempts = 200; // Prevent infinite loops
+
+        while (!placed && attempts < maxAttempts) {
+            // Generate random position relative to the
