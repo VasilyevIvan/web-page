@@ -226,14 +226,15 @@ section {
     border: 2px solid var(--primary-color);
 }
 
+/* Styling for links within research-list h3 elements */
 .research-list h3 a {
     text-decoration: none; /* No underline by default */
-    color: var(--primary-color); /* Maintain text color */
+    color: var(--primary-color); /* Links are black */
     transition: color 0.3s ease, text-decoration 0.3s ease;
 }
 
 .research-list h3 a:hover {
-    color: var(--gray); /* Change color on hover like other nav links */
+    color: var(--gray); /* Change color to gray on hover */
     text-decoration: underline; /* Add underline on hover */
 }
 
