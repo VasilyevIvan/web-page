@@ -17,13 +17,6 @@
     --light-gray: #e0e0e0;
     --navbar-height: 80px; /* Define navbar height as a variable */
     --border-radius: 0;
-
-    /* New variables for floating images */
-    --floating-img-size-base: 120px; /* Original size before scaling */
-    /* EDITED: Reduced by a factor of 10 (0.1) from the original 66.7% scaling */
-    --floating-img-scale-factor: 0.0667; /* 6.67% of original 120px, or 10% of previous scaled size */
-    --floating-img-width: calc(var(--floating-img-size-base) * var(--floating-img-scale-factor)); /* Calculated scaled width */
-    --floating-img-height: calc(var(--floating-img-size-base) * var(--floating-img-scale-factor)); /* Calculated scaled height */
 }
 
 body {
@@ -120,45 +113,40 @@ body {
     padding: 0 40px;
 }
 
-/* NEW: Floating images container */
-#floating-images-container {
-    position: absolute; /* Relative to #hero */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden; /* Ensure images don't go outside */
-    pointer-events: none; /* Allows clicks to pass through to elements behind */
-    z-index: 1; /* Below hero-text */
-}
-
-.floating-image {
+.hero-image-cluster {
     position: absolute;
-    width: var(--floating-img-width); /* Scaled width */
-    height: var(--floating-img-height); /* Scaled height */
-    pointer-events: none; /* Also for individual images */
-    opacity: 0; /* Hidden initially, will fade in with JS */
-    transition: opacity 0.5s ease-out, transform 0.5s ease; /* Smooth fade in and transform */
+    top: var(--navbar-height); /* Position flush under the navbar */
+    left: 0; /* Position flush to the left edge */
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    z-index: 10;
+    gap: 5px; /* Spacing between rows */
 }
 
-.floating-image img {
-    width: 100%;
-    height: 100%;
+.image-row {
+    display: flex;
+    gap: 5px; /* Spacing between photos in a row */
+}
+
+.hero-image-cluster img {
+    width: 120px;
+    height: 120px;
     object-fit: cover;
     filter: grayscale(100%);
-    display: block; /* Remove extra space below image */
-    border: 1px solid var(--primary-color); /* Optional: add a border */
+    background-color: var(--light-gray); /* Placeholder color */
 }
 
+/* Indent each row to create the pyramid shape */
+.row-3 { margin-left: 62.5px; } /* (120px / 2) + (5px / 2) */
+.row-2 { margin-left: 125px; } /* 120px + 5px */
+.row-1 { margin-left: 187.5px; } /* (120px * 1.5) + (5px * 1.5) */
 
 .hero-text {
     text-align: right;
     max-width: 55%;
-    z-index: 20; /* Keep hero-text above floating images */
+    z-index: 20;
     position: relative;
-    /* Add padding for collision detection buffer, handled in JS via TEXT_BUFFER */
-    padding: 20px; 
-    background-color: rgba(255, 255, 255, 0.0); /* Transparent background for collision calculation */
 }
 
 .hero-text h1 {
@@ -249,6 +237,13 @@ section {
 .research-list .date {
     color: var(--primary-color);
     font-style: italic;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.fine-print {
+    font-size: 0.9em; /* Smaller font size */
+    color: var(--gray); /* Subdued color */
     margin-bottom: 10px;
     display: block;
 }
@@ -427,24 +422,28 @@ footer {
     }
 }
 
-
 @media (max-width: 992px) {
     #hero {
-        padding-top: var(--navbar-height); /* Keep hero padding consistent */
-        align-items: center; /* Center content vertically */
+        padding-top: 120px;
+        align-items: flex-start;
     }
 
     .hero-content {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        justify-content: center; /* Center content horizontally */
+        justify-content: flex-start;
     }
-    
+
+    .hero-image-cluster {
+        position: static;
+        margin-bottom: 40px;
+        align-items: center;
+    }
+
     .hero-text {
         text-align: center;
         max-width: 100%;
-        padding: 40px; /* More padding for text on smaller screens */
     }
 }
 
@@ -452,7 +451,7 @@ footer {
     .nav-links {
         display: none;
         position: absolute;
-        top: 80px; 
+        top: 80px;
         left: 0;
         width: 100%;
         background-color: var(--white);
@@ -460,41 +459,38 @@ footer {
         padding: 20px;
         border-top: 2px solid var(--primary-color);
     }
-    
+
     .nav-links.active {
         display: flex;
     }
-    
-    .nav-links li {
-        margin: 15px 0;
-        text-align: center;
-    }
-    
+
     .hamburger {
         display: flex;
     }
-    
+
     .hero-text h1 {
         font-size: 3.5rem;
     }
-    
+
     .hero-text h2 {
         font-size: 0.9rem;
     }
-    
+
     .section-title {
         font-size: 2.5rem;
     }
 }
 
 @media (max-width: 576px) {
-    /* Adjust floating image size for very small screens if needed, or let JS handle it */
-    /*
-    :root {
-        --floating-img-size-base: 90px;
+    .hero-image-cluster img {
+        width: 90px;
+        height: 90px;
     }
-    */
-    
+
+    .row-3 { margin-left: 47.5px; } /* (90 / 2) + (5 / 2) */
+    .row-2 { margin-left: 95px; } /* 90 + 5 */
+    .row-1 { margin-left: 142.5px; } /* (90 * 1.5) + (5 * 1.5) */
+
     .hero-text h1 {
         font-size: 2.8rem;
     }
@@ -502,7 +498,7 @@ footer {
     .section-title {
         font-size: 2rem;
     }
-    
+
     section {
         padding: 80px 0;
     }
