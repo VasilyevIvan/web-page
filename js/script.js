@@ -19,22 +19,41 @@ document.querySelectorAll('.nav-links a').forEach(link => {
 document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();
-        
+
         const targetId = this.getAttribute('href');
         if (targetId === '#') return;
         
-        // Remove no-scroll if it was applied (e.g., from an attempted smooth scroll)
+        // Enable scrolling
         document.body.classList.remove('no-scroll');
         
         const targetElement = document.querySelector(targetId);
         if (targetElement) {
             window.scrollTo({
-                top: targetElement.offsetTop - 80, // Offset for fixed navbar
+                top: targetElement.offsetTop - 80,
                 behavior: 'smooth'
             });
         }
     });
 });
+
+// Scroll to top when clicking on logo (assuming you'll add a .scroll-top element for this)
+// Currently, there's no element with class 'scroll-top' in your HTML.
+// If you intend to use this, you'll need to add an element like:
+// <a href="#" class="scroll-top">Your Logo/Name</a>
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollTopLink = document.querySelector('.scroll-top');
+    if (scrollTopLink) {
+        scrollTopLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.body.classList.add('no-scroll');
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+});
+
 
 // Navbar background change on scroll
 window.addEventListener('scroll', () => {
@@ -46,13 +65,36 @@ window.addEventListener('scroll', () => {
         navbar.style.background = 'rgba(255, 255, 255, 0.95)';
         navbar.style.boxShadow = 'none';
     }
+
+    // Enable scrolling if user manually scrolls
+    // Note: The 'no-scroll' class is intended to prevent scrolling initially or in specific cases.
+    // This logic might conflict with enabling scrolling via navigation links.
+    // You might want to refine when 'no-scroll' is applied/removed.
+    if (window.scrollY > 50) {
+        document.body.classList.remove('no-scroll');
+    } else if (!navLinks.classList.contains('active')) { // Keep no-scroll if at top and menu not active
+         // document.body.classList.add('no-scroll'); // This line was commented out in original logic, review if needed
+    }
 });
 
+// Prevent scrolling with mouse wheel on hero section
+document.getElementById('hero').addEventListener('wheel', function(e) {
+    if (document.body.classList.contains('no-scroll')) {
+        e.preventDefault();
+    }
+}, { passive: false }); // Added passive: false to allow preventDefault
 
-// Animation on scroll for other sections
+// Prevent scrolling with touch events on hero section
+document.getElementById('hero').addEventListener('touchmove', function(e) {
+    if (document.body.classList.contains('no-scroll')) {
+        e.preventDefault();
+    }
+}, { passive: false }); // Added passive: false to allow preventDefault
+
+// Animation on scroll
 function animateOnScroll() {
     const elements = document.querySelectorAll('.research-list li, .talk-item, .teaching-item, .achievement-item');
-    
+
     elements.forEach(element => {
         const elementPosition = element.getBoundingClientRect().top;
         const screenPosition = window.innerHeight / 1.3;
@@ -64,149 +106,14 @@ function animateOnScroll() {
     });
 }
 
-// Initialize elements for animation (for sections below hero)
+// Initialize elements for animation
 document.querySelectorAll('.research-list li, .talk-item, .teaching-item, .achievement-item').forEach(item => {
     item.style.opacity = 0;
     item.style.transform = 'translateY(20px)';
     item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
 });
 
-// Listen for scroll events for section animations
+// Listen for scroll events
 window.addEventListener('scroll', animateOnScroll);
-// Initial check in case elements are already in view on load
+// Initial check in case elements are already in view
 window.addEventListener('load', animateOnScroll);
-
-
-// --- NEW JAVASCRIPT FOR FLOATING IMAGES ---
-
-const floatingImages = document.querySelectorAll('.floating-image');
-const heroText = document.querySelector('.hero-text');
-const navbar = document.getElementById('navbar');
-
-// Constants for image sizing and collision buffer
-// We fetch these from CSS variables for consistency
-let IMAGE_WIDTH;
-let IMAGE_HEIGHT;
-let NAV_BAR_HEIGHT;
-const TEXT_BUFFER = 40; // This buffer needs to match the padding of .hero-text or be slightly larger
-
-// Function to update dimensions from CSS variables (important for resize)
-function updateDimensions() {
-    IMAGE_WIDTH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--floating-img-width'));
-    IMAGE_HEIGHT = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--floating-img-height'));
-    NAV_BAR_HEIGHT = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height'));
-}
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-// Check for collision between two rectangles (x, y, width, height)
-function checkCollision(rect1, rect2) {
-    return rect1.x < rect2.x + rect2.width &&
-           rect1.x + rect1.width > rect2.x &&
-           rect1.y < rect2.y + rect2.height &&
-           rect1.y + rect1.height > rect2.y;
-}
-
-function positionFloatingImages() {
-    console.log("Attempting to position floating images...");
-    updateDimensions(); // Get latest dimensions on each call
-
-    const heroSection = document.getElementById('hero');
-    if (!heroSection) {
-        console.error("Hero section not found!");
-        return;
-    }
-
-    const heroRect = heroSection.getBoundingClientRect();
-    
-    // Calculate available space *within* the hero section for placing images
-    // Account for navbar at the top
-    const minX = 0;
-    const maxX = heroRect.width - IMAGE_WIDTH; // Ensure image stays within hero width
-    // Adjusted minY and maxY to properly utilize the space below the navbar within the hero section
-    const minY = NAV_BAR_HEIGHT; 
-    const maxY = heroRect.height - IMAGE_HEIGHT; 
-
-    // Get the bounding box of the hero text, adjusted for the padding as a buffer
-    // These coordinates are relative to the viewport
-    const heroTextRect = heroText.getBoundingClientRect();
-    const bufferedTextRect = {
-        x: heroTextRect.left - TEXT_BUFFER,
-        y: heroTextRect.top - TEXT_BUFFER,
-        width: heroTextRect.width + (TEXT_BUFFER * 2),
-        height: heroTextRect.height + (TEXT_BUFFER * 2),
-    };
-    console.log("Buffered Text Rect (Viewport relative):", bufferedTextRect);
-
-
-    const placedRects = []; // Store the bounding boxes of successfully placed images (viewport relative)
-
-    floatingImages.forEach((imageDiv, index) => {
-        let placed = false;
-        let attempts = 0;
-        const maxAttempts = 200; // Prevent infinite loops for unplaceable configurations
-
-        let currentImageRect; // To store the potential new position
-
-        // Hide image initially, will show if successfully placed
-        imageDiv.style.opacity = 0; 
-
-        while (!placed && attempts < maxAttempts) {
-            attempts++;
-
-            // Generate random position within the hero section, relative to its top-left corner
-            // Ensure positions are valid for the scaled image size
-            // Math.max(minX, maxX) handles cases where maxX might be negative if viewport is too small for image
-            const randomX = getRandomInt(minX, Math.max(minX, maxX)); 
-            const randomY = getRandomInt(minY, Math.max(minY, maxY)); 
-
-            currentImageRect = {
-                x: randomX + heroRect.left, // Convert to viewport-relative
-                y: randomY + heroRect.top,  // Convert to viewport-relative
-                width: IMAGE_WIDTH,
-                height: IMAGE_HEIGHT
-            };
-
-            let overlaps = false;
-
-            // Check collision with Hero Text
-            if (checkCollision(currentImageRect, bufferedTextRect)) {
-                overlaps = true;
-            }
-
-            // Check collision with already placed images
-            if (!overlaps) {
-                for (const existingRect of placedRects) {
-                    if (checkCollision(currentImageRect, existingRect)) {
-                        overlaps = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!overlaps) {
-                // If no overlaps, place the image
-                imageDiv.style.left = `${randomX}px`;
-                imageDiv.style.top = `${randomY}px`;
-                imageDiv.style.transform = `rotate(${getRandomInt(-65, 65)}deg)`;
-                imageDiv.style.opacity = 1; // MAKE IT VISIBLE!
-                
-                placedRects.push(currentImageRect); // Add to placed rectangles
-                placed = true;
-                console.log(`Image ${index} placed at X:${randomX}, Y:${randomY}`);
-            }
-        }
-
-        if (!placed) {
-            console.warn(`Could not place image ${index} after ${maxAttempts} attempts. It might be overlapping or there's not enough space.`);
-            // If an image cannot be placed, it will remain at opacity:0
-        }
-    });
-    console.log("Finished positioning floating images.");
-}
-
-// Call the function when the window loads and on resize
-window.addEventListener('load', positionFloatingImages);
-window.addEventListener('resize', positionFloatingImages); // Reposition on resize
