@@ -226,12 +226,15 @@ section {
     border: 2px solid var(--primary-color);
 }
 
-.research-list h3 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-    color: var(--primary-color);
-    text-transform: uppercase;
-    font-weight: 700;
+.research-list h3 a {
+    text-decoration: none; /* No underline by default */
+    color: var(--primary-color); /* Maintain text color */
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.research-list h3 a:hover {
+    color: var(--gray); /* Change color on hover like other nav links */
+    text-decoration: underline; /* Add underline on hover */
 }
 
 .research-list .date {
