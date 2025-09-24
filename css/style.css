@@ -288,6 +288,8 @@ section {
 }
 
 /* Teaching section */
+
+
 #teaching {
     background-color: var(--light-bg);
 }
@@ -483,6 +485,16 @@ footer {
     .section-title {
         font-size: 2.5rem;
     }
+
+    .subsection-title {
+    font-size: 1.8rem; /* Slightly smaller than section title */
+    color: var(--primary-color);
+    text-align: center;
+    margin-top: 60px; /* Space above subsection */
+    margin-bottom: 40px; /* Space below subsection title */
+    text-transform: uppercase;
+    font-weight: 700;
+}
 }
 
 @media (max-width: 576px) {
