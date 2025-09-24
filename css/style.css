@@ -378,10 +378,11 @@ section {
 
 .contact-info p {
     margin-bottom: 15px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    /* Removed display: inline-flex; align-items: center; justify-content: center; */
+    /* Instead, just keep text-align center, which is already applied to .contact-info */
     font-size: 1.1rem;
+    display: block; /* Make each paragraph a block to stack vertically */
+    text-align: center; /* Ensure text remains centered */
 }
 
 .contact-info i {
