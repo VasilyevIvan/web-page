@@ -278,6 +278,20 @@ margin-top: 28px;
 text-align: left;
 border-top: 2px solid var(--primary-color);
 }
+.grouped-list {
+border-top: 0;
+}
+.grouped-list ul {
+list-style: none;
+border-top: 2px solid var(--primary-color);
+}
+.compact-group-title {
+font-size: 0.82rem;
+font-weight: 700;
+letter-spacing: 0.08em;
+margin: 30px 0 10px;
+text-transform: uppercase;
+}
 .compact-list li,
 .other-projects li {
 display: grid;
@@ -444,9 +458,7 @@ margin-top: 8px;
 background-color: var(--white);
 }
 .achievements-content {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-gap: 30px;
+display: block;
 }
 .achievement-item {
 background-color: var(--light-bg);
