@@ -245,6 +245,51 @@ padding: 25px;
 margin-bottom: 20px;
 border: 2px solid var(--primary-color);
 }
+.more-research {
+max-width: 800px;
+margin: 12px auto 0;
+text-align: center;
+}
+.more-research-toggle {
+appearance: none;
+background-color: var(--primary-color);
+border: 2px solid var(--primary-color);
+color: var(--secondary-color);
+cursor: pointer;
+font: inherit;
+font-size: 0.85rem;
+font-weight: 700;
+letter-spacing: 0.08em;
+padding: 10px 22px;
+text-transform: uppercase;
+transition: background-color 0.3s ease, color 0.3s ease;
+}
+.more-research-toggle:hover {
+background-color: var(--secondary-color);
+color: var(--primary-color);
+}
+.other-projects {
+list-style: none;
+margin-top: 28px;
+text-align: left;
+border-top: 2px solid var(--primary-color);
+}
+.other-projects li {
+display: grid;
+grid-template-columns: minmax(0, 1fr) 260px;
+gap: 24px;
+padding: 18px 0;
+border-bottom: 2px solid var(--primary-color);
+}
+.other-projects h3 {
+font-size: 1rem;
+line-height: 1.35;
+text-transform: uppercase;
+}
+.other-projects .fine-print {
+margin-bottom: 0;
+text-align: right;
+}
 /* Styling for links within research-list h3 elements */
 .research-list h3 a {
 text-decoration: none; /* No underline by default */
@@ -556,6 +601,13 @@ right: auto;
 }
 .timeline-card {
 padding: 20px;
+}
+.other-projects li {
+display: block;
+}
+.other-projects .fine-print {
+margin-top: 6px;
+text-align: left;
 }
 }
 @media (max-width: 576px) {

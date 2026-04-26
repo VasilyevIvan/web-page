@@ -65,6 +65,18 @@ if (targetPage === 'home') {
 requestAnimationFrame(animateOnScroll);
 }
 
+const moreResearchToggle = document.querySelector('.more-research-toggle');
+const otherProjects = document.querySelector('#other-projects');
+if (moreResearchToggle && otherProjects) {
+moreResearchToggle.addEventListener('click', () => {
+    const isOpen = moreResearchToggle.getAttribute('aria-expanded') === 'true';
+
+    moreResearchToggle.setAttribute('aria-expanded', String(!isOpen));
+    moreResearchToggle.textContent = isOpen ? 'More' : 'Less';
+    otherProjects.hidden = isOpen;
+});
+}
+
 hamburger.addEventListener('click', () => {
 navLinks.classList.toggle('active');
 hamburger.classList.toggle('active');
