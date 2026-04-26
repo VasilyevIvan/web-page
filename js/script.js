@@ -118,7 +118,7 @@ e.preventDefault();
 }, { passive: false }); // Added passive: false to allow preventDefault
 // Animation on scroll
 function animateOnScroll() {
-const elements = document.querySelectorAll('.research-list li, .talk-item, .teaching-item, .achievement-item');
+const elements = document.querySelectorAll('.research-list li, .talk-item, .timeline-item, .achievement-item');
 elements.forEach(element => {
     const elementPosition = element.getBoundingClientRect().top;
     const screenPosition = window.innerHeight / 1.3;
@@ -130,7 +130,7 @@ elements.forEach(element => {
 });
 }
 // Initialize elements for animation
-document.querySelectorAll('.research-list li, .talk-item, .teaching-item, .achievement-item').forEach(item => {
+document.querySelectorAll('.research-list li, .talk-item, .timeline-item, .achievement-item').forEach(item => {
 item.style.opacity = 0;
 item.style.transform = 'translateY(20px)';
 item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
