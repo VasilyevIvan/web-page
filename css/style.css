@@ -245,11 +245,13 @@ padding: 25px;
 margin-bottom: 20px;
 border: 2px solid var(--primary-color);
 }
+.more-list,
 .more-research {
 max-width: 800px;
 margin: 12px auto 0;
 text-align: center;
 }
+.more-toggle,
 .more-research-toggle {
 appearance: none;
 background-color: var(--primary-color);
@@ -264,16 +266,19 @@ padding: 10px 22px;
 text-transform: uppercase;
 transition: background-color 0.3s ease, color 0.3s ease;
 }
+.more-toggle:hover,
 .more-research-toggle:hover {
 background-color: var(--secondary-color);
 color: var(--primary-color);
 }
+.compact-list,
 .other-projects {
 list-style: none;
 margin-top: 28px;
 text-align: left;
 border-top: 2px solid var(--primary-color);
 }
+.compact-list li,
 .other-projects li {
 display: grid;
 grid-template-columns: minmax(0, 1fr) 260px;
@@ -281,11 +286,22 @@ gap: 24px;
 padding: 18px 0;
 border-bottom: 2px solid var(--primary-color);
 }
+.compact-list h3,
 .other-projects h3 {
 font-size: 1rem;
 line-height: 1.35;
 text-transform: uppercase;
 }
+.compact-list h3 a {
+color: var(--primary-color);
+text-decoration: none;
+transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+.compact-list h3 a:hover {
+color: var(--gray);
+text-decoration: underline;
+}
+.compact-list .fine-print,
 .other-projects .fine-print {
 margin-bottom: 0;
 text-align: right;
@@ -317,9 +333,7 @@ display: block;
 background-color: var(--white);
 }
 .talks-content {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-gap: 30px;
+display: block;
 }
 .talk-item {
 background-color: var(--light-bg);
@@ -602,9 +616,11 @@ right: auto;
 .timeline-card {
 padding: 20px;
 }
+.compact-list li,
 .other-projects li {
 display: block;
 }
+.compact-list .fine-print,
 .other-projects .fine-print {
 margin-top: 6px;
 text-align: left;

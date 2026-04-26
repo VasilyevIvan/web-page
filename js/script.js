@@ -65,17 +65,19 @@ if (targetPage === 'home') {
 requestAnimationFrame(animateOnScroll);
 }
 
-const moreResearchToggle = document.querySelector('.more-research-toggle');
-const otherProjects = document.querySelector('#other-projects');
-if (moreResearchToggle && otherProjects) {
-moreResearchToggle.addEventListener('click', () => {
-    const isOpen = moreResearchToggle.getAttribute('aria-expanded') === 'true';
+document.querySelectorAll('.more-toggle, .more-research-toggle').forEach(toggle => {
+const targetId = toggle.getAttribute('aria-controls');
+const target = document.getElementById(targetId);
+if (!target) return;
 
-    moreResearchToggle.setAttribute('aria-expanded', String(!isOpen));
-    moreResearchToggle.textContent = isOpen ? 'More' : 'Less';
-    otherProjects.hidden = isOpen;
+toggle.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    toggle.textContent = isOpen ? 'More' : 'Less';
+    target.hidden = isOpen;
 });
-}
+});
 
 hamburger.addEventListener('click', () => {
 navLinks.classList.toggle('active');
