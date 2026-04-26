@@ -1,6 +1,42 @@
 // Mobile navigation toggle
 const hamburger = document.querySelector('.hamburger');
 const navLinks = document.querySelector('.nav-links');
+const cardPhotos = document.querySelectorAll('.card-photo');
+
+function randomBetween(min, max) {
+if (max <= min) return min;
+return Math.random() * (max - min) + min;
+}
+
+function layoutThrownCards() {
+const cluster = document.querySelector('.hero-image-cluster');
+if (!cluster || cardPhotos.length === 0) return;
+
+const clusterRect = cluster.getBoundingClientRect();
+const firstCardRect = cardPhotos[0].getBoundingClientRect();
+const cardWidth = firstCardRect.width || 120;
+const cardHeight = firstCardRect.height || 120;
+const maxX = Math.max(0, clusterRect.width - cardWidth);
+const maxY = Math.max(0, clusterRect.height - cardHeight);
+
+cardPhotos.forEach((photo, index) => {
+    const x = randomBetween(0, maxX);
+    const y = randomBetween(Math.min(12, maxY), maxY);
+    const angle = randomBetween(-22, 22);
+    const startX = randomBetween(-80, 80);
+    const startRotate = randomBetween(-35, 35);
+
+    photo.style.setProperty('--card-x', `${x}px`);
+    photo.style.setProperty('--card-y', `${y}px`);
+    photo.style.setProperty('--card-angle', `${angle}deg`);
+    photo.style.setProperty('--card-start-x', `${startX}px`);
+    photo.style.setProperty('--card-start-rotate', `${startRotate}deg`);
+    photo.style.setProperty('--card-delay', `${index * 115}ms`);
+    photo.style.zIndex = String(index + 1);
+});
+}
+
+layoutThrownCards();
 hamburger.addEventListener('click', () => {
 navLinks.classList.toggle('active');
 hamburger.classList.toggle('active');
