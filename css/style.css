@@ -481,6 +481,9 @@ line-height: 1.8;
 max-width: 680px;
 margin: 0 auto;
 }
+.seminar-intro p + p {
+margin-top: 12px;
+}
 .seminar-links {
 display: flex;
 justify-content: center;
@@ -623,6 +626,13 @@ line-height: 1.6;
 }
 .beyond-film-notes li:first-child {
 border-top: 0;
+}
+.beyond-note-image {
+width: min(100%, 360px);
+height: auto;
+margin-top: 14px;
+border: 2px solid var(--primary-color);
+display: block;
 }
 .beyond-image-stack {
 display: grid;
