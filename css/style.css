@@ -634,6 +634,37 @@ margin-top: 14px;
 border: 2px solid var(--primary-color);
 display: block;
 }
+.beyond-wide-image {
+width: min(100%, 640px);
+height: auto;
+margin-top: 14px;
+border: 2px solid var(--primary-color);
+display: block;
+}
+.beyond-theater-list {
+display: grid;
+gap: 30px;
+}
+.beyond-theater-item {
+padding-top: 30px;
+border-top: 1px solid var(--primary-color);
+}
+.beyond-theater-item:first-child {
+padding-top: 0;
+border-top: 0;
+}
+.beyond-theater-item a {
+display: inline-block;
+margin-top: 10px;
+color: var(--primary-color);
+font-weight: 700;
+text-decoration: none;
+border-bottom: 2px solid var(--primary-color);
+}
+.beyond-theater-item a:hover {
+color: var(--gray);
+border-bottom-color: var(--gray);
+}
 .beyond-image-stack {
 display: grid;
 gap: 16px;
