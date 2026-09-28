@@ -65,7 +65,7 @@ if (targetPage === 'home') {
 requestAnimationFrame(animateOnScroll);
 }
 
-document.querySelectorAll('.more-toggle, .more-research-toggle').forEach(toggle => {
+document.querySelectorAll('.more-toggle').forEach(toggle => {
 const targetId = toggle.getAttribute('aria-controls');
 const target = document.getElementById(targetId);
 if (!target) return;
