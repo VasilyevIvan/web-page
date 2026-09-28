@@ -251,17 +251,29 @@ color: var(--primary-color);
 .research-list + .research-group-title {
 margin-top: 40px;
 }
-#research .other-projects {
+#research .other-projects,
+.past-talks {
 max-width: 800px;
 margin: 0 auto;
 }
-#research .other-projects li {
-padding: 12px 0;
+.past-talks .compact-group-title {
+margin: 22px 0 8px;
+color: var(--gray);
 }
-#research .other-projects h3 {
+.past-talks .compact-group-title:first-child {
+margin-top: 0;
+}
+#research .other-projects li,
+#talks .past-talks li {
+padding: 12px 0;
+grid-template-columns: minmax(0, 1fr) 340px;
+}
+#research .other-projects h3,
+#talks .past-talks li h3 {
 font-size: 0.9rem;
 }
-#research .other-projects .fine-print {
+#research .other-projects .fine-print,
+#talks .past-talks .fine-print {
 font-size: 0.85rem;
 }
 .project-note {
