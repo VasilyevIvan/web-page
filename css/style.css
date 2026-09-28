@@ -255,9 +255,18 @@ margin-top: 40px;
 max-width: 800px;
 margin: 0 auto;
 }
+#research .other-projects li {
+padding: 12px 0;
+}
+#research .other-projects h3 {
+font-size: 0.9rem;
+}
+#research .other-projects .fine-print {
+font-size: 0.85rem;
+}
 .project-note {
-margin-top: 6px;
-font-size: 0.95rem;
+margin-top: 4px;
+font-size: 0.85rem;
 }
 .research-list li {
 background-color: var(--white);
