@@ -461,28 +461,32 @@ background-color: var(--light-bg);
 max-width: 880px;
 margin: 0 auto;
 }
-.seminar-intro {
+.seminar-current {
 background-color: var(--white);
-border: 2px solid var(--primary-color);
-padding: 30px;
+border: 3px solid var(--primary-color);
+padding: 48px 40px;
 text-align: center;
 }
-.seminar-intro h3,
-.seminar-schedule h3 {
-font-size: 1.2rem;
-margin-bottom: 14px;
+.seminar-label {
+font-size: 0.85rem;
+font-weight: 700;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: var(--gray);
+margin-bottom: 10px;
+}
+.seminar-current h3 {
+font-size: 1.6rem;
+margin-bottom: 18px;
 color: var(--primary-color);
 text-transform: uppercase;
 font-weight: 700;
 }
-.seminar-intro p {
+.seminar-current > p:not(.seminar-label) {
 font-size: 1.1rem;
 line-height: 1.8;
 max-width: 680px;
 margin: 0 auto;
-}
-.seminar-intro p + p {
-margin-top: 12px;
 }
 .seminar-links {
 display: flex;
@@ -509,40 +513,58 @@ transition: background-color 0.3s ease, color 0.3s ease;
 background-color: var(--secondary-color);
 color: var(--primary-color);
 }
-.seminar-schedule {
+.document-link.is-pending {
+background-color: transparent;
+color: var(--primary-color);
+border-style: dashed;
+cursor: default;
+}
+.seminar-past {
 margin-top: 40px;
 }
-.seminar-schedule h3 {
+.seminar-past h3 {
+font-size: 1rem;
+margin-bottom: 14px;
+color: var(--primary-color);
+text-transform: uppercase;
+font-weight: 700;
 text-align: center;
-margin-bottom: 20px;
 }
-.schedule-list {
-list-style: none;
+.seminar-past-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 20px;
 background-color: var(--white);
 border: 2px solid var(--primary-color);
-}
-.schedule-list li {
-display: grid;
-grid-template-columns: 110px 150px minmax(0, 1fr);
-gap: 20px;
 padding: 18px 24px;
-border-bottom: 2px solid var(--primary-color);
-align-items: center;
 }
-.schedule-list li:last-child {
-border-bottom: 0;
+.seminar-past-title {
+font-weight: 700;
+font-size: 1.05rem;
 }
-.schedule-date {
+.seminar-past-links {
+display: flex;
+gap: 18px;
+}
+.seminar-past-links a {
+color: var(--primary-color);
 font-weight: 700;
 text-transform: uppercase;
+font-size: 0.85rem;
+letter-spacing: 0.08em;
 }
-.schedule-speaker {
-font-size: 1.05rem;
-font-weight: 700;
+@media (max-width: 600px) {
+.seminar-current {
+padding: 32px 20px;
 }
-.schedule-talk {
-font-weight: 600;
-text-align: left;
+.seminar-links {
+flex-direction: column;
+}
+.seminar-past-item {
+flex-direction: column;
+align-items: flex-start;
+}
 }
 /* Beyond Math section */
 #beyond-math {
@@ -869,13 +891,6 @@ display: block;
 .compact-list .fine-print,
 .other-projects .fine-print {
 margin-top: 6px;
-text-align: left;
-}
-.schedule-list li {
-grid-template-columns: 1fr;
-gap: 6px;
-}
-.schedule-talk {
 text-align: left;
 }
 .beyond-story,
