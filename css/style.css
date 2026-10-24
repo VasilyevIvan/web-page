@@ -248,6 +248,14 @@ letter-spacing: 0.08em;
 text-transform: uppercase;
 color: var(--primary-color);
 }
+.research-group-link {
+float: right;
+font-size: 0.8rem;
+color: var(--primary-color);
+}
+.research-group-link:hover {
+color: var(--gray);
+}
 .research-list + .research-group-title {
 margin-top: 40px;
 }
