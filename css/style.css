@@ -559,6 +559,19 @@ transition: background-color 0.3s ease, color 0.3s ease;
 background-color: var(--secondary-color);
 color: var(--primary-color);
 }
+.seminar-current > p.seminar-notes {
+margin-top: 20px;
+font-size: 0.85rem;
+font-weight: 700;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+}
+.seminar-notes a {
+color: var(--primary-color);
+}
+.seminar-notes a:hover {
+color: var(--gray);
+}
 .document-link.is-pending {
 background-color: transparent;
 color: var(--primary-color);
