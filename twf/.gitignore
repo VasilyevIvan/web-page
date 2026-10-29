@@ -1,2 +1,4 @@
 cache/
 __pycache__/
+# plaintext stays local; only weeks.enc is published
+data/weeks.json

@@ -137,14 +137,27 @@ $('list').addEventListener('change', e => {
 });
 ['q', 'year', 'state', 'sort'].forEach(id => $(id).addEventListener('input', render));
 
-fetch('data/weeks.json').then(r => r.ok ? r.json() : Promise.reject()).then(d => {
+// The data is AES-GCM encrypted; the key comes from the link (#k=...) and is remembered in this browser.
+const KEY_STORE = 'twf-library-key';
+async function loadData() {
+    let k = new URLSearchParams(location.hash.slice(1)).get('k');
+    try { k ? localStorage.setItem(KEY_STORE, k) : (k = localStorage.getItem(KEY_STORE)); } catch (e) {}
+    if (!k) throw 0;
+    const b64 = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+    const enc = await (await fetch('data/weeks.enc')).json();
+    const key = await crypto.subtle.importKey('raw', b64(k), 'AES-GCM', false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(enc.iv) }, key, b64(enc.data));
+    return JSON.parse(new TextDecoder().decode(plain));
+}
+
+loadData().then(d => {
     weeks = d.weeks || []; topics = d.topics || {};
     if (!weeks.length) throw 0;
     [...new Set(weeks.map(w => (w.date || '').slice(0, 4)).filter(Boolean))].sort()
         .forEach(y => $('year').insertAdjacentHTML('beforeend', `<option>${y}</option>`));
     renderChips(); render();
 }).catch(() => {
-    $('list').innerHTML = `<p class="empty">No data yet. Run <code>python3 twf/build.py</code> from the repository root to download and classify the weeks.</p>`;
+    $('list').innerHTML = `<p class="empty">This page needs its full access link to open.</p>`;
 });
 </script>
 </body>

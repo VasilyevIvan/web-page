@@ -9,6 +9,7 @@ arXiv paper in that class (old-style IDs like hep-th/9301028 carry it).
 
 Usage:  python3 twf/build.py            # fetch what's missing, rebuild json
         python3 twf/build.py --offline  # only use the cache
+Then run twf/encrypt.mjs: only the encrypted weeks.enc is committed.
 Standard library only.
 """
 import html, json, re, sys, time, urllib.request
