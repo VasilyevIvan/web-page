@@ -49,11 +49,11 @@
 <div class="wrap">
     <header>
         <h1>This Week's Finds — Library</h1>
-        <p>John Baez, <a href="https://math.ucr.edu/home/baez/twfcontents.html">This Week's Finds in Mathematical Physics</a> (weeks 1–300, 1993–2010), sorted by topic. Read marks, stars and notes are saved in this browser only.</p>
+        <p>John Baez, <a href="https://math.ucr.edu/home/baez/twfcontents.html">This Week's Finds in Mathematical Physics</a> (weeks 1–300, 1993–2010), sorted by <a href="https://arxiv.org/category_taxonomy">arXiv subject class</a>. Read marks, stars and notes are saved in this browser only.</p>
     </header>
 
     <div class="controls">
-        <input type="search" id="q" placeholder="Search number, summary, notes…" aria-label="Search">
+        <input type="search" id="q" placeholder="Search number, summary, math.CT, notes…" aria-label="Search">
         <select id="year" aria-label="Year"><option value="">All years</option></select>
         <select id="state" aria-label="Reading state">
             <option value="">All</option>
@@ -78,16 +78,16 @@ try { user = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(user)); } catch (e) {} };
 const u = n => (user[n] ||= {});
 
-let weeks = [], topics = [];
+let weeks = [], topics = {};
 const selected = new Set();
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 function renderChips() {
-    const counts = Object.fromEntries(topics.map(t => [t, 0]));
+    const counts = Object.fromEntries(Object.keys(topics).map(t => [t, 0]));
     weeks.forEach(w => w.topics.forEach(t => counts[t]++));
-    $('chips').innerHTML = topics.filter(t => counts[t]).map(t =>
-        `<button class="chip" data-t="${esc(t)}" aria-pressed="${selected.has(t)}">${esc(t)}<span>${counts[t]}</span></button>`).join('');
+    $('chips').innerHTML = Object.keys(topics).filter(t => counts[t]).map(t =>
+        `<button class="chip" data-t="${esc(t)}" aria-pressed="${selected.has(t)}"><b>${esc(t)}</b> ${esc(topics[t])}<span>${counts[t]}</span></button>`).join('');
 }
 
 function render() {
@@ -99,7 +99,7 @@ function render() {
         if (state === 'unread' && s.read) return false;
         if (state === 'star' && !s.star) return false;
         if ([...selected].some(t => !w.topics.includes(t))) return false;
-        if (q && !(String(w.n) === q || (w.summary + ' ' + w.topics.join(' ') + ' ' + (s.note || '')).toLowerCase().includes(q))) return false;
+        if (q && !(String(w.n) === q || (w.summary + ' ' + w.topics.map(t => t + ' ' + topics[t]).join(' ') + ' ' + (s.note || '')).toLowerCase().includes(q))) return false;
         return true;
     });
     if ($('sort').value === 'desc') rows = rows.reverse();
@@ -112,7 +112,7 @@ function render() {
             <div>
                 <a class="title" href="${esc(w.url)}" target="_blank" rel="noopener">Week ${w.n}</a>
                 <p class="summary">${esc(w.summary)}</p>
-                <div class="tags">${w.topics.map(t => `<span class="tag" data-t="${esc(t)}">${esc(t)}</span>`).join('')}</div>
+                <div class="tags">${w.topics.map(t => `<span class="tag" data-t="${esc(t)}" title="${esc(topics[t])}">${esc(t)}</span>`).join('')}</div>
                 <input class="note" placeholder="Your note…" value="${esc(s.note || '')}">
             </div>
             <div class="actions">
@@ -138,7 +138,7 @@ $('list').addEventListener('change', e => {
 ['q', 'year', 'state', 'sort'].forEach(id => $(id).addEventListener('input', render));
 
 fetch('data/weeks.json').then(r => r.ok ? r.json() : Promise.reject()).then(d => {
-    weeks = d.weeks || []; topics = d.topics || [];
+    weeks = d.weeks || []; topics = d.topics || {};
     if (!weeks.length) throw 0;
     [...new Set(weeks.map(w => (w.date || '').slice(0, 4)).filter(Boolean))].sort()
         .forEach(y => $('year').insertAdjacentHTML('beforeend', `<option>${y}</option>`));

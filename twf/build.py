@@ -3,7 +3,7 @@
 
 Downloads John Baez's "This Week's Finds in Mathematical Physics"
 (weeks 1-300, 1993-2010) from math.ucr.edu, caches the raw HTML in
-twf/cache/, and tags every week with topics from TAXONOMY by keyword
+twf/cache/, and tags every week with arXiv subject classes from TAXONOMY by keyword
 counts over its full text.
 
 Usage:  python3 twf/build.py            # fetch what's missing, rebuild json
@@ -19,61 +19,70 @@ CACHE = HERE / "cache"
 OUT = HERE / "data" / "weeks.json"
 LAST_WEEK = 300
 
-# topic -> keywords (lowercase; matched as whole words / phrases)
+# arXiv subject class -> (name, keywords). Keywords are lowercase and
+# matched as whole words / phrases. Codes follow https://arxiv.org/category_taxonomy
 TAXONOMY = {
-    "Category theory": ["category", "categories", "functor", "functors", "natural transformation",
-                        "monoidal", "adjoint", "topos", "topoi", "yoneda", "operad", "operads"],
-    "Higher categories": ["n-category", "n-categories", "2-category", "2-categories", "bicategory",
-                          "bicategories", "omega-category", "infinity-category", "higher category",
-                          "higher categories", "homotopy hypothesis", "categorification", "categorified",
-                          "2-group", "2-groups", "stabilization hypothesis"],
-    "Homotopy & algebraic topology": ["homotopy", "homology", "cohomology", "spectra", "spectrum",
-                                      "fibration", "loop space", "k-theory", "cobordism", "simplicial",
-                                      "eilenberg", "postnikov", "stable homotopy", "elliptic cohomology"],
-    "Knots & low-dim topology": ["knot", "knots", "link invariant", "jones polynomial", "braid", "braids",
-                                 "3-manifold", "3-manifolds", "4-manifold", "4-manifolds", "vassiliev",
-                                 "tangle", "tangles", "donaldson", "seiberg-witten"],
-    "Quantum groups & Hopf algebras": ["quantum group", "quantum groups", "hopf algebra", "hopf algebras",
-                                       "yang-baxter", "r-matrix", "quasitriangular"],
-    "TQFT": ["tqft", "tqfts", "topological quantum field theory", "chern-simons", "turaev-viro",
-             "state sum", "spin foam", "spin foams", "extended tqft"],
-    "Quantum gravity": ["quantum gravity", "loop quantum gravity", "spin network", "spin networks",
-                        "ashtekar", "barrett-crane", "ponzano-regge", "wheeler-dewitt"],
-    "String theory": ["string theory", "superstring", "superstrings", "m-theory", "d-brane", "d-branes",
-                      "ads/cft", "calabi-yau", "mirror symmetry", "duality"],
-    "General relativity & cosmology": ["general relativity", "black hole", "black holes", "cosmology",
-                                       "big bang", "gravitational wave", "gravitational waves",
-                                       "dark energy", "dark matter", "inflation", "spacetime"],
-    "Particle physics": ["standard model", "quark", "quarks", "neutrino", "neutrinos", "higgs",
-                         "gauge theory", "grand unified", "gut", "supersymmetry", "lepton", "leptons"],
-    "Quantum theory": ["quantum mechanics", "quantum theory", "quantum computation", "quantum computer",
-                       "entanglement", "hilbert space", "decoherence", "quantum information"],
-    "Lie theory & exceptional structures": ["lie group", "lie groups", "lie algebra", "lie algebras",
-                                            "e8", "e7", "e6", "g2", "f4", "dynkin", "root system",
-                                            "exceptional", "coxeter", "weyl group", "kac-moody"],
-    "Octonions & division algebras": ["octonion", "octonions", "quaternion", "quaternions",
-                                      "division algebra", "division algebras", "jordan algebra",
-                                      "triality", "clifford algebra", "clifford algebras", "spinor", "spinors"],
-    "Number theory": ["number theory", "modular form", "modular forms", "zeta function", "riemann hypothesis",
-                      "prime", "primes", "galois", "elliptic curve", "elliptic curves", "langlands",
-                      "p-adic", "adele", "adeles", "fermat"],
-    "Geometry & symmetry": ["polytope", "polytopes", "lattice", "lattices", "leech", "platonic",
-                            "icosahedron", "dodecahedron", "tiling", "tilings", "symmetry group",
-                            "projective geometry", "klein", "moonshine", "monster"],
-    "Algebraic geometry": ["algebraic geometry", "scheme", "schemes", "sheaf", "sheaves", "motive",
-                           "motives", "grothendieck", "moduli space", "riemann surface", "riemann surfaces"],
-    "Noncommutative geometry & operator algebras": ["noncommutative geometry", "von neumann", "c*-algebra",
-                                                    "connes", "operator algebra", "subfactor", "subfactors"],
-    "Combinatorics & species": ["combinatorics", "species", "generating function", "generating functions",
-                                "partition", "partitions", "catalan"],
-    "Logic & foundations": ["logic", "type theory", "lambda calculus", "set theory", "godel", "gödel",
-                            "computability", "proof theory", "foundations"],
-    "Networks, biology & environment": ["petri net", "petri nets", "network theory", "chemical reaction",
-                                        "biology", "climate", "ecology", "evolution", "stochastic", "markov",
-                                        "population"],
-    "History & mathematicians": ["history", "historical", "biography", "obituary", "erlangen"],
-    "Astronomy": ["astronomy", "telescope", "galaxy", "galaxies", "supernova", "pulsar", "pulsars",
-                  "planet", "planets", "hubble", "cassini", "comet"],
+    # Mathematics
+    "math.AG": ("Algebraic Geometry", ["algebraic geometry", "scheme", "schemes", "variety", "varieties",
+               "motive", "motives", "moduli space", "moduli spaces", "elliptic curve", "elliptic curves",
+               "riemann surface", "riemann surfaces", "grothendieck", "stack", "stacks"]),
+    "math.AT": ("Algebraic Topology", ["homotopy", "homology", "cohomology", "spectra", "fibration",
+               "loop space", "loop spaces", "k-theory", "cobordism", "simplicial", "postnikov",
+               "stable homotopy", "elliptic cohomology", "homotopy hypothesis"]),
+    "math.CO": ("Combinatorics", ["combinatorics", "combinatorial", "species", "generating function",
+               "generating functions", "partitions", "catalan", "graph theory"]),
+    "math.CT": ("Category Theory", ["category", "categories", "functor", "functors", "natural transformation",
+               "monoidal", "adjoint", "adjunction", "topos", "topoi", "yoneda", "operad", "operads",
+               "n-category", "n-categories", "2-category", "2-categories", "bicategory", "bicategories",
+               "higher category", "higher categories", "categorification", "categorified", "2-group", "2-groups"]),
+    "math.DG": ("Differential Geometry", ["differential geometry", "connection", "connections", "curvature",
+               "holonomy", "fiber bundle", "fiber bundles", "principal bundle", "riemannian", "gerbe", "gerbes"]),
+    "math.GR": ("Group Theory", ["finite group", "finite groups", "sporadic", "monster", "moonshine",
+               "coxeter", "symmetry group", "symmetric group", "permutation", "permutations"]),
+    "math.GT": ("Geometric Topology", ["knot", "knots", "link invariant", "jones polynomial", "braid", "braids",
+               "3-manifold", "3-manifolds", "4-manifold", "4-manifolds", "vassiliev", "tangle", "tangles",
+               "donaldson", "seiberg-witten"]),
+    "math.HO": ("History and Overview", ["history", "historical", "biography", "obituary"]),
+    "math.LO": ("Logic", ["logic", "type theory", "lambda calculus", "set theory", "godel", "gödel",
+               "computability", "proof theory"]),
+    "math.MG": ("Metric Geometry", ["polytope", "polytopes", "lattice", "lattices", "leech", "platonic",
+               "icosahedron", "dodecahedron", "tiling", "tilings", "sphere packing", "kissing number",
+               "projective geometry"]),
+    "math.MP": ("Mathematical Physics", ["mathematical physics", "lagrangian", "hamiltonian",
+               "symplectic", "classical mechanics", "geometric quantization"]),
+    "math.NT": ("Number Theory", ["number theory", "modular form", "modular forms", "zeta function",
+               "riemann hypothesis", "prime", "primes", "galois", "langlands", "p-adic", "adele", "adeles", "fermat"]),
+    "math.OA": ("Operator Algebras", ["von neumann", "c*-algebra", "c*-algebras", "operator algebra",
+               "subfactor", "subfactors", "noncommutative geometry", "connes"]),
+    "math.PR": ("Probability", ["probability", "stochastic", "markov", "random walk", "brownian"]),
+    "math.QA": ("Quantum Algebra", ["quantum group", "quantum groups", "hopf algebra", "hopf algebras",
+               "yang-baxter", "r-matrix", "quasitriangular", "vertex operator", "tqft", "tqfts",
+               "topological quantum field theory"]),
+    "math.RA": ("Rings and Algebras", ["octonion", "octonions", "quaternion", "quaternions", "division algebra",
+               "division algebras", "jordan algebra", "jordan algebras", "clifford algebra", "clifford algebras",
+               "nonassociative"]),
+    "math.RT": ("Representation Theory", ["lie group", "lie groups", "lie algebra", "lie algebras", "e8", "e7",
+               "e6", "g2", "f4", "dynkin", "root system", "weyl group", "kac-moody", "representation theory",
+               "representations"]),
+    # Physics
+    "hep-th": ("High Energy Physics – Theory", ["string theory", "superstring", "superstrings", "m-theory",
+              "d-brane", "d-branes", "ads/cft", "calabi-yau", "mirror symmetry", "supersymmetry",
+              "supergravity", "conformal field theory", "chern-simons", "gauge theory", "yang-mills"]),
+    "hep-ph": ("High Energy Physics – Phenomenology", ["standard model", "quark", "quarks", "neutrino",
+              "neutrinos", "higgs", "grand unified", "lepton", "leptons", "particle physics"]),
+    "gr-qc": ("General Relativity and Quantum Cosmology", ["general relativity", "black hole", "black holes",
+             "quantum gravity", "loop quantum gravity", "spin network", "spin networks", "spin foam",
+             "spin foams", "ashtekar", "barrett-crane", "ponzano-regge", "wheeler-dewitt", "spacetime",
+             "gravitational wave", "gravitational waves", "einstein's equation"]),
+    "quant-ph": ("Quantum Physics", ["quantum mechanics", "quantum theory", "quantum computation",
+                "quantum computer", "quantum computers", "entanglement", "hilbert space", "decoherence",
+                "quantum information"]),
+    "astro-ph": ("Astrophysics", ["astronomy", "cosmology", "big bang", "dark energy", "dark matter",
+                "inflation", "telescope", "galaxy", "galaxies", "supernova", "pulsar", "pulsars",
+                "hubble", "planet", "planets", "comet"]),
+    "q-bio": ("Quantitative Biology", ["biology", "ecology", "evolution", "population", "chemical reaction",
+             "chemical reactions", "petri net", "petri nets"]),
+    "physics.ao-ph": ("Atmospheric and Oceanic Physics", ["climate", "global warming", "ocean", "atmosphere"]),
 }
 TAG_THRESHOLD = 3   # min keyword hits for a topic to count
 MAX_TAGS = 4        # keep at most this many topics per week (strongest first)
@@ -127,7 +136,7 @@ def find_date(text):
 def classify(text):
     low = text.lower()
     scores = {}
-    for topic, words in TAXONOMY.items():
+    for topic, (_, words) in TAXONOMY.items():
         hits = sum(len(re.findall(r"(?<![\w-])" + re.escape(w) + r"(?![\w-])", low)) for w in words)
         if hits >= TAG_THRESHOLD:
             scores[topic] = hits
@@ -158,7 +167,7 @@ def main():
         })
         print(f"week {n}: {', '.join(weeks[-1]['topics']) or '-'}")
     OUT.write_text(json.dumps({"generated": time.strftime("%Y-%m-%d"),
-                               "topics": list(TAXONOMY), "weeks": weeks},
+                               "topics": {code: name for code, (name, _) in TAXONOMY.items()}, "weeks": weeks},
                               ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {len(weeks)} weeks to {OUT}")
 
