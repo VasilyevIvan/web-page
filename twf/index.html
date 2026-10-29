@@ -38,6 +38,9 @@
         .actions button { font: inherit; font-size: 0.75rem; padding: 3px 8px; border: 1px solid var(--fg); background: var(--bg); cursor: pointer; white-space: nowrap; }
         .actions button[aria-pressed=true] { background: var(--fg); color: var(--bg); }
         .empty { padding: 40px 0; color: var(--muted); }
+        .today { border: 2px solid var(--fg); padding: 4px 16px 0; margin-bottom: 24px; }
+        .today h2 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding-top: 10px; }
+        .today .week { border-top: 0; }
         .empty code { background: var(--soft); padding: 2px 6px; }
         @media (max-width: 600px) {
             .week { grid-template-columns: 1fr; }
@@ -51,6 +54,8 @@
         <h1>This Week's Finds — Library</h1>
         <p>John Baez, <a href="https://math.ucr.edu/home/baez/twfcontents.html">This Week's Finds in Mathematical Physics</a> (weeks 1–300, 1993–2010), sorted by <a href="https://arxiv.org/category_taxonomy">arXiv subject class</a>. Read marks, stars and notes are saved in this browser only.</p>
     </header>
+
+    <section class="today" id="today" hidden aria-label="Today's issue"></section>
 
     <div class="controls">
         <input type="search" id="q" placeholder="Search number, summary, math.CT, notes…" aria-label="Search">
@@ -105,7 +110,11 @@ function render() {
     if ($('sort').value === 'desc') rows = rows.reverse();
     const read = weeks.filter(w => user[w.n]?.read).length;
     $('status').textContent = `${rows.length} of ${weeks.length} weeks shown · ${read} read`;
-    $('list').innerHTML = rows.map(w => {
+    $('list').innerHTML = rows.map(card).join('');
+    renderToday();
+}
+
+function card(w) {
         const s = user[w.n] || {};
         return `<article class="week${s.read ? ' read' : ''}" data-n="${w.n}">
             <div class="num">${w.n}<small>${esc(w.date || '')}</small></div>
@@ -120,20 +129,41 @@ function render() {
                 <button data-a="star" aria-pressed="${!!s.star}">${s.star ? '★ Starred' : '☆ Star'}</button>
             </div>
         </article>`;
-    }).join('');
+}
+
+// One issue per day: picked at random from the unread ones, then kept for the rest of that day.
+const TODAY_KEY = 'twf-library-today';
+function todaysWeek() {
+    const d = new Date(), date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(TODAY_KEY)); } catch (e) {}
+    let w = saved?.date === date && weeks.find(x => x.n === saved.n);
+    if (!w) {
+        const unread = weeks.filter(x => !user[x.n]?.read);
+        const pool = unread.length ? unread : weeks;
+        w = pool[Math.floor(Math.random() * pool.length)];
+        try { localStorage.setItem(TODAY_KEY, JSON.stringify({ date, n: w.n })); } catch (e) {}
+    }
+    return w;
+}
+
+function renderToday() {
+    const w = weeks.length && todaysWeek();
+    $('today').hidden = !w;
+    if (w) $('today').innerHTML = `<h2>Today's issue</h2>` + card(w);
 }
 
 function toggleTopic(t) { selected.has(t) ? selected.delete(t) : selected.add(t); renderChips(); render(); }
 
 $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) toggleTopic(b.dataset.t); });
-$('list').addEventListener('click', e => {
+for (const el of [$('list'), $('today')]) el.addEventListener('click', e => {
     const tag = e.target.closest('.tag'); if (tag) return toggleTopic(tag.dataset.t);
     const b = e.target.closest('button[data-a]'); if (!b) return;
     const s = u(b.closest('.week').dataset.n); s[b.dataset.a] = !s[b.dataset.a]; save(); render();
 });
-$('list').addEventListener('change', e => {
+for (const el of [$('list'), $('today')]) el.addEventListener('change', e => {
     if (!e.target.classList.contains('note')) return;
-    u(e.target.closest('.week').dataset.n).note = e.target.value; save();
+    u(e.target.closest('.week').dataset.n).note = e.target.value; save(); render();
 });
 ['q', 'year', 'state', 'sort'].forEach(id => $(id).addEventListener('input', render));
 
