@@ -3,8 +3,9 @@
 
 Downloads John Baez's "This Week's Finds in Mathematical Physics"
 (weeks 1-300, 1993-2010) from math.ucr.edu, caches the raw HTML in
-twf/cache/, and tags every week with arXiv subject classes from TAXONOMY by keyword
-counts over its full text.
+twf/cache/, and tags every week with arXiv subject classes. A class's
+score is its keyword density in the issue plus a bonus for every cited
+arXiv paper in that class (old-style IDs like hep-th/9301028 carry it).
 
 Usage:  python3 twf/build.py            # fetch what's missing, rebuild json
         python3 twf/build.py --offline  # only use the cache
@@ -23,35 +24,41 @@ LAST_WEEK = 300
 # matched as whole words / phrases. Codes follow https://arxiv.org/category_taxonomy
 TAXONOMY = {
     # Mathematics
-    "math.AG": ("Algebraic Geometry", ["algebraic geometry", "scheme", "schemes", "variety", "varieties",
-               "motive", "motives", "moduli space", "moduli spaces", "elliptic curve", "elliptic curves",
-               "riemann surface", "riemann surfaces", "grothendieck", "stack", "stacks"]),
-    "math.AT": ("Algebraic Topology", ["homotopy", "homology", "cohomology", "spectra", "fibration",
-               "loop space", "loop spaces", "k-theory", "cobordism", "simplicial", "postnikov",
-               "stable homotopy", "elliptic cohomology", "homotopy hypothesis"]),
+    "math.AG": ("Algebraic Geometry", ["algebraic geometry", "scheme", "schemes", "algebraic variety",
+               "algebraic varieties", "motive", "motives", "moduli space", "moduli spaces", "elliptic curve",
+               "elliptic curves", "riemann surface", "riemann surfaces", "grothendieck"]),
+    "math.AT": ("Algebraic Topology", ["homotopy", "homology", "cohomology", "fibration", "loop space",
+               "loop spaces", "k-theory", "cobordism", "simplicial", "postnikov", "stable homotopy",
+               "elliptic cohomology", "homotopy hypothesis"]),
     "math.CO": ("Combinatorics", ["combinatorics", "combinatorial", "species", "generating function",
                "generating functions", "partitions", "catalan", "graph theory"]),
     "math.CT": ("Category Theory", ["category", "categories", "functor", "functors", "natural transformation",
                "monoidal", "adjoint", "adjunction", "topos", "topoi", "yoneda", "operad", "operads",
                "n-category", "n-categories", "2-category", "2-categories", "bicategory", "bicategories",
-               "higher category", "higher categories", "categorification", "categorified", "2-group", "2-groups"]),
-    "math.DG": ("Differential Geometry", ["differential geometry", "connection", "connections", "curvature",
-               "holonomy", "fiber bundle", "fiber bundles", "principal bundle", "riemannian", "gerbe", "gerbes"]),
+               "higher category", "higher categories", "categorification", "categorified", "2-group", "2-groups",
+               "groupoid", "groupoids", "string diagram", "string diagrams", "frobenius algebra",
+               "frobenius algebras", "2-vector space", "2-vector spaces", "higher-dimensional algebra",
+               "cartesian closed", "tensor category", "tensor categories"]),
+    "math.DG": ("Differential Geometry", ["differential geometry", "curvature", "holonomy", "fiber bundle",
+               "fiber bundles", "principal bundle", "riemannian", "gerbe", "gerbes"]),
     "math.GR": ("Group Theory", ["finite group", "finite groups", "sporadic", "monster", "moonshine",
-               "coxeter", "symmetry group", "symmetric group", "permutation", "permutations"]),
+               "coxeter", "symmetry group", "symmetric group"]),
     "math.GT": ("Geometric Topology", ["knot", "knots", "link invariant", "jones polynomial", "braid", "braids",
                "3-manifold", "3-manifolds", "4-manifold", "4-manifolds", "vassiliev", "tangle", "tangles",
                "donaldson", "seiberg-witten"]),
-    "math.HO": ("History and Overview", ["history", "historical", "biography", "obituary"]),
+    "math.HO": ("History and Overview", ["biography", "obituary", "history of mathematics", "history of physics",
+               "chronology", "prehistory"]),
     "math.LO": ("Logic", ["logic", "type theory", "lambda calculus", "set theory", "godel", "gödel",
                "computability", "proof theory"]),
     "math.MG": ("Metric Geometry", ["polytope", "polytopes", "lattice", "lattices", "leech", "platonic",
                "icosahedron", "dodecahedron", "tiling", "tilings", "sphere packing", "kissing number",
                "projective geometry"]),
     "math.MP": ("Mathematical Physics", ["mathematical physics", "lagrangian", "hamiltonian",
-               "symplectic", "classical mechanics", "geometric quantization"]),
+               "classical mechanics", "statistical mechanics", "thermodynamics", "entropy",
+               "electrical circuit", "electrical circuits", "bond graph", "bond graphs"]),
     "math.NT": ("Number Theory", ["number theory", "modular form", "modular forms", "zeta function",
-               "riemann hypothesis", "prime", "primes", "galois", "langlands", "p-adic", "adele", "adeles", "fermat"]),
+               "riemann hypothesis", "prime number", "prime numbers", "galois", "langlands", "p-adic",
+               "adele", "adeles", "fermat"]),
     "math.OA": ("Operator Algebras", ["von neumann", "c*-algebra", "c*-algebras", "operator algebra",
                "subfactor", "subfactors", "noncommutative geometry", "connes"]),
     "math.PR": ("Probability", ["probability", "stochastic", "markov", "random walk", "brownian"]),
@@ -62,9 +69,9 @@ TAXONOMY = {
                "division algebras", "jordan algebra", "jordan algebras", "clifford algebra", "clifford algebras",
                "nonassociative"]),
     "math.RT": ("Representation Theory", ["lie group", "lie groups", "lie algebra", "lie algebras", "e8", "e7",
-               "e6", "g2", "f4", "dynkin", "root system", "weyl group", "kac-moody", "representation theory",
-               "representations"]),
-    # Physics
+               "e6", "g2", "f4", "dynkin", "root system", "weyl group", "kac-moody", "representation theory"]),
+    "math.SG": ("Symplectic Geometry", ["symplectic", "poisson manifold", "moment map", "geometric quantization"]),
+    # Physics and beyond
     "hep-th": ("High Energy Physics – Theory", ["string theory", "superstring", "superstrings", "m-theory",
               "d-brane", "d-branes", "ads/cft", "calabi-yau", "mirror symmetry", "supersymmetry",
               "supergravity", "conformal field theory", "chern-simons", "gauge theory", "yang-mills"]),
@@ -73,19 +80,30 @@ TAXONOMY = {
     "gr-qc": ("General Relativity and Quantum Cosmology", ["general relativity", "black hole", "black holes",
              "quantum gravity", "loop quantum gravity", "spin network", "spin networks", "spin foam",
              "spin foams", "ashtekar", "barrett-crane", "ponzano-regge", "wheeler-dewitt", "spacetime",
-             "gravitational wave", "gravitational waves", "einstein's equation"]),
+             "gravitational wave", "gravitational waves"]),
+    "cond-mat": ("Condensed Matter", ["condensed matter", "graphene", "crystal", "crystals", "quasicrystal",
+                "quasicrystals", "superconductor", "superconductivity", "semiconductor", "phase transition",
+                "phase transitions", "solid state", "anyons", "bose-einstein"]),
     "quant-ph": ("Quantum Physics", ["quantum mechanics", "quantum theory", "quantum computation",
                 "quantum computer", "quantum computers", "entanglement", "hilbert space", "decoherence",
-                "quantum information"]),
+                "quantum information", "qubit", "qubits", "bell's inequality"]),
     "astro-ph": ("Astrophysics", ["astronomy", "cosmology", "big bang", "dark energy", "dark matter",
                 "inflation", "telescope", "galaxy", "galaxies", "supernova", "pulsar", "pulsars",
-                "hubble", "planet", "planets", "comet"]),
-    "q-bio": ("Quantitative Biology", ["biology", "ecology", "evolution", "population", "chemical reaction",
-             "chemical reactions", "petri net", "petri nets"]),
-    "physics.ao-ph": ("Atmospheric and Oceanic Physics", ["climate", "global warming", "ocean", "atmosphere"]),
+                "hubble", "comet", "solar system", "lagrange point", "lagrange points", "orbit", "orbits",
+                "mars", "jupiter", "saturn", "venus", "mercury", "neutron star", "neutron stars",
+                "quark star", "asteroid", "asteroids"]),
+    "q-bio": ("Quantitative Biology", ["biology", "ecology", "chemical reaction", "chemical reactions",
+             "petri net", "petri nets", "biochemistry"]),
+    "physics.ao-ph": ("Atmospheric and Oceanic Physics", ["climate", "global warming", "climate change"]),
 }
-TAG_THRESHOLD = 3   # min keyword hits for a topic to count
-MAX_TAGS = 4        # keep at most this many topics per week (strongest first)
+
+# Pre-2007 arXiv archives that were later merged into a TAXONOMY class.
+OLD_ARCHIVES = {"q-alg": "math.QA", "alg-geom": "math.AG", "dg-ga": "math.DG", "math-ph": "math.MP",
+                "math.QG": "math.QA", "hep-lat": "hep-ph", "hep-ex": "hep-ph"}
+ARXIV_ID = re.compile(r"(?<![\w.-])([a-z]+(?:-[a-z]+)?(?:\.[A-Z]{2})?)/\d{7}\b")
+CITE_WEIGHT = 1.5     # score per cited arXiv paper of a class
+TAG_THRESHOLD = 1.0   # min score for a class to count
+MAX_TAGS = 4          # keep at most this many classes per week (strongest first)
 
 
 def fetch(name, offline):
@@ -108,66 +126,70 @@ def to_text(raw):
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"(?s)<[^>]+>", " ", raw))).strip()
 
 
-def parse_contents(raw):
-    """week number -> one-line description, taken from twfcontents.html."""
-    entries = {}
-    links = list(re.finditer(r'(?i)<a[^>]+href="?(?:[^">]*/)?week(\d+)\.html"?[^>]*>', raw))
-    for i, m in enumerate(links):
-        end = links[i + 1].start() if i + 1 < len(links) else len(raw)
-        n = int(m.group(1))
-        desc = to_text(raw[m.end():end])
-        desc = re.sub(r"^(?:week\s*\d+\s*[-:,.]*\s*)", "", desc, flags=re.I)
-        if n not in entries or len(desc) > len(entries[n]):
-            entries[n] = desc[:600]
-    return entries
+def split_week(raw):
+    """(header text, body text) of a week page."""
+    head, _, body = raw.partition("END HEADER")
+    return to_text(head), to_text(body.removeprefix(" -->"))
 
 
-DATE_RE = re.compile(r"\b(January|February|March|April|May|June|July|August|September|October|"
-                     r"November|December)\s+(\d{1,2}),?\s+(19\d\d|20[01]\d)\b")
-MONTHS = {m: i + 1 for i, m in enumerate(["January", "February", "March", "April", "May", "June", "July",
-                                          "August", "September", "October", "November", "December"])}
+def summarize(body, limit=320):
+    """Opening sentences of the issue, cut at a sentence end near `limit`."""
+    if len(body) <= limit:
+        return body
+    cut = max(body.rfind(". ", 0, limit), body.rfind("? ", 0, limit), body.rfind("! ", 0, limit))
+    return body[:cut + 1] if cut > limit // 3 else body[:limit].rsplit(" ", 1)[0] + "…"
+
+
+DATE_RE = re.compile(r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(\d{1,2}),?\s+"
+                     r"(19\d\d|20[01]\d)\b")
+MONTHS = {m: i + 1 for i, m in enumerate("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split())}
 
 
 def find_date(text):
-    m = DATE_RE.search(text[:2000])
+    m = DATE_RE.search(text[:3000])
     return f"{m.group(3)}-{MONTHS[m.group(1)]:02d}-{int(m.group(2)):02d}" if m else None
 
 
 def classify(text):
+    """Score each class by keyword hits per 1000 words plus cited arXiv papers; return the top ones."""
     low = text.lower()
+    per_k = 1000 / max(len(low.split()), 1)
     scores = {}
-    for topic, (_, words) in TAXONOMY.items():
+    for code, (_, words) in TAXONOMY.items():
         hits = sum(len(re.findall(r"(?<![\w-])" + re.escape(w) + r"(?![\w-])", low)) for w in words)
-        if hits >= TAG_THRESHOLD:
-            scores[topic] = hits
-    return [t for t, _ in sorted(scores.items(), key=lambda kv: -kv[1])[:MAX_TAGS]]
+        scores[code] = hits * per_k
+    for archive in ARXIV_ID.findall(text):
+        code = OLD_ARCHIVES.get(archive, archive)
+        if code in scores:
+            scores[code] += CITE_WEIGHT
+    ranked = sorted(((v, k) for k, v in scores.items() if v >= TAG_THRESHOLD), reverse=True)
+    return [k for _, k in ranked[:MAX_TAGS]]
 
 
 def main():
     offline = "--offline" in sys.argv
-    contents = parse_contents(fetch("twfcontents.html", offline) or "")
     weeks = []
     for n in range(1, LAST_WEEK + 1):
         try:
             raw = fetch(f"week{n}.html", offline)
         except Exception as e:
             print(f"week {n}: {e}", file=sys.stderr)
-            raw = None
-        text = to_text(raw) if raw else ""
-        summary = contents.get(n, "")
-        if not text and not summary:
             continue
+        if not raw:
+            continue
+        head, body = split_week(raw)
         weeks.append({
             "n": n,
-            "date": find_date(text) or find_date(summary),
-            "summary": summary,
-            "topics": classify(text or summary),
+            "date": find_date(head) or find_date(body),
+            "summary": summarize(body),
+            "topics": classify(body),
             "url": f"{BASE}week{n}.html",
-            "words": len(text.split()),
+            "words": len(body.split()),
         })
         print(f"week {n}: {', '.join(weeks[-1]['topics']) or '-'}")
     OUT.write_text(json.dumps({"generated": time.strftime("%Y-%m-%d"),
-                               "topics": {code: name for code, (name, _) in TAXONOMY.items()}, "weeks": weeks},
+                               "topics": {code: name for code, (name, _) in TAXONOMY.items()},
+                               "weeks": weeks},
                               ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {len(weeks)} weeks to {OUT}")
 
