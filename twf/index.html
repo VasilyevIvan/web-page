@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TWF Library</title>
+    <meta name="description" content="A personal, topic-classified index of John Baez's This Week's Finds in Mathematical Physics.">
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --fg: #000; --bg: #fff; --muted: #666; --line: #e0e0e0; --soft: #f5f5f5; }
+        body { font-family: 'Montserrat', sans-serif; line-height: 1.6; color: var(--fg); background: var(--bg); }
+        .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 16px 64px; }
+        header { border-bottom: 2px solid var(--fg); padding-bottom: 16px; margin-bottom: 24px; }
+        h1 { font-size: 1.8rem; font-weight: 700; }
+        header p { color: var(--muted); font-size: 0.9rem; }
+        header a { color: inherit; }
+        .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .controls input, .controls select { font: inherit; font-size: 0.9rem; padding: 8px 10px; border: 1px solid var(--fg); background: var(--bg); }
+        .controls input[type=search] { flex: 1 1 240px; }
+        .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+        .chip { font: inherit; font-size: 0.78rem; padding: 4px 10px; border: 1px solid var(--fg); background: var(--bg); cursor: pointer; }
+        .chip[aria-pressed=true] { background: var(--fg); color: var(--bg); }
+        .chip span { opacity: 0.6; margin-left: 4px; }
+        .status { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
+        .week { border-top: 1px solid var(--line); padding: 14px 0; display: grid; grid-template-columns: 72px 1fr auto; gap: 12px; }
+        .week.read { opacity: 0.55; }
+        .num { font-weight: 700; font-size: 1.1rem; }
+        .num small { display: block; font-weight: 400; font-size: 0.72rem; color: var(--muted); }
+        .week a.title { color: var(--fg); font-weight: 600; text-decoration: none; }
+        .week a.title:hover { text-decoration: underline; }
+        .summary { font-size: 0.88rem; margin: 2px 0 6px; }
+        .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+        .tag { font-size: 0.7rem; padding: 1px 6px; background: var(--soft); border: 1px solid var(--line); cursor: pointer; }
+        .note { width: 100%; font: inherit; font-size: 0.8rem; margin-top: 6px; padding: 4px 6px; border: 1px dashed var(--line); background: transparent; }
+        .actions { display: flex; flex-direction: column; gap: 4px; }
+        .actions button { font: inherit; font-size: 0.75rem; padding: 3px 8px; border: 1px solid var(--fg); background: var(--bg); cursor: pointer; white-space: nowrap; }
+        .actions button[aria-pressed=true] { background: var(--fg); color: var(--bg); }
+        .empty { padding: 40px 0; color: var(--muted); }
+        .empty code { background: var(--soft); padding: 2px 6px; }
+        @media (max-width: 600px) {
+            .week { grid-template-columns: 1fr; }
+            .actions { flex-direction: row; }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <h1>This Week's Finds — Library</h1>
+        <p>John Baez, <a href="https://math.ucr.edu/home/baez/twfcontents.html">This Week's Finds in Mathematical Physics</a> (weeks 1–300, 1993–2010), sorted by <a href="https://arxiv.org/category_taxonomy">arXiv subject class</a>. Read marks, stars and notes are saved in this browser only.</p>
+    </header>
+
+    <div class="controls">
+        <input type="search" id="q" placeholder="Search number, summary, math.CT, notes…" aria-label="Search">
+        <select id="year" aria-label="Year"><option value="">All years</option></select>
+        <select id="state" aria-label="Reading state">
+            <option value="">All</option>
+            <option value="unread">Unread</option>
+            <option value="read">Read</option>
+            <option value="star">Starred</option>
+        </select>
+        <select id="sort" aria-label="Sort">
+            <option value="asc">Oldest first</option>
+            <option value="desc">Newest first</option>
+        </select>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="status" id="status"></div>
+    <div id="list"></div>
+</div>
+
+<script>
+const KEY = 'twf-library-v1';
+let user = {};
+try { user = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(user)); } catch (e) {} };
+const u = n => (user[n] ||= {});
+
+let weeks = [], topics = {};
+const selected = new Set();
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function renderChips() {
+    const counts = Object.fromEntries(Object.keys(topics).map(t => [t, 0]));
+    weeks.forEach(w => w.topics.forEach(t => counts[t]++));
+    $('chips').innerHTML = Object.keys(topics).filter(t => counts[t]).map(t =>
+        `<button class="chip" data-t="${esc(t)}" aria-pressed="${selected.has(t)}"><b>${esc(t)}</b> ${esc(topics[t])}<span>${counts[t]}</span></button>`).join('');
+}
+
+function render() {
+    const q = $('q').value.trim().toLowerCase(), year = $('year').value, state = $('state').value;
+    let rows = weeks.filter(w => {
+        const s = user[w.n] || {};
+        if (year && !(w.date || '').startsWith(year)) return false;
+        if (state === 'read' && !s.read) return false;
+        if (state === 'unread' && s.read) return false;
+        if (state === 'star' && !s.star) return false;
+        if ([...selected].some(t => !w.topics.includes(t))) return false;
+        if (q && !(String(w.n) === q || (w.summary + ' ' + w.topics.map(t => t + ' ' + topics[t]).join(' ') + ' ' + (s.note || '')).toLowerCase().includes(q))) return false;
+        return true;
+    });
+    if ($('sort').value === 'desc') rows = rows.reverse();
+    const read = weeks.filter(w => user[w.n]?.read).length;
+    $('status').textContent = `${rows.length} of ${weeks.length} weeks shown · ${read} read`;
+    $('list').innerHTML = rows.map(w => {
+        const s = user[w.n] || {};
+        return `<article class="week${s.read ? ' read' : ''}" data-n="${w.n}">
+            <div class="num">${w.n}<small>${esc(w.date || '')}</small></div>
+            <div>
+                <a class="title" href="${esc(w.url)}" target="_blank" rel="noopener">Week ${w.n}</a>
+                <p class="summary">${esc(w.summary)}</p>
+                <div class="tags">${w.topics.map(t => `<span class="tag" data-t="${esc(t)}" title="${esc(topics[t])}">${esc(t)}</span>`).join('')}</div>
+                <input class="note" placeholder="Your note…" value="${esc(s.note || '')}">
+            </div>
+            <div class="actions">
+                <button data-a="read" aria-pressed="${!!s.read}">${s.read ? 'Read ✓' : 'Mark read'}</button>
+                <button data-a="star" aria-pressed="${!!s.star}">${s.star ? '★ Starred' : '☆ Star'}</button>
+            </div>
+        </article>`;
+    }).join('');
+}
+
+function toggleTopic(t) { selected.has(t) ? selected.delete(t) : selected.add(t); renderChips(); render(); }
+
+$('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) toggleTopic(b.dataset.t); });
+$('list').addEventListener('click', e => {
+    const tag = e.target.closest('.tag'); if (tag) return toggleTopic(tag.dataset.t);
+    const b = e.target.closest('button[data-a]'); if (!b) return;
+    const s = u(b.closest('.week').dataset.n); s[b.dataset.a] = !s[b.dataset.a]; save(); render();
+});
+$('list').addEventListener('change', e => {
+    if (!e.target.classList.contains('note')) return;
+    u(e.target.closest('.week').dataset.n).note = e.target.value; save();
+});
+['q', 'year', 'state', 'sort'].forEach(id => $(id).addEventListener('input', render));
+
+// The data is AES-GCM encrypted; the key comes from the link (#k=...) and is remembered in this browser.
+const KEY_STORE = 'twf-library-key';
+async function loadData() {
+    let k = new URLSearchParams(location.hash.slice(1)).get('k');
+    try { k ? localStorage.setItem(KEY_STORE, k) : (k = localStorage.getItem(KEY_STORE)); } catch (e) {}
+    if (!k) throw 0;
+    const b64 = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+    const enc = await (await fetch('data/weeks.enc')).json();
+    const key = await crypto.subtle.importKey('raw', b64(k), 'AES-GCM', false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(enc.iv) }, key, b64(enc.data));
+    return JSON.parse(new TextDecoder().decode(plain));
+}
+
+loadData().then(d => {
+    weeks = d.weeks || []; topics = d.topics || {};
+    if (!weeks.length) throw 0;
+    [...new Set(weeks.map(w => (w.date || '').slice(0, 4)).filter(Boolean))].sort()
+        .forEach(y => $('year').insertAdjacentHTML('beforeend', `<option>${y}</option>`));
+    renderChips(); render();
+}).catch(() => {
+    $('list').innerHTML = `<p class="empty">This page needs its full access link to open.</p>`;
+});
+</script>
+</body>
+</html>
