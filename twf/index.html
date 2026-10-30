@@ -41,6 +41,16 @@
         .today { border: 2px solid var(--fg); padding: 4px 16px 0; margin-bottom: 24px; }
         .today h2 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding-top: 10px; }
         .today .week { border-top: 0; }
+        .reader { position: fixed; inset: 0; z-index: 10; display: grid; grid-template-rows: auto 1fr; background: var(--bg); }
+        .reader[hidden] { display: none; }
+        .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 2px solid var(--fg); }
+        .bar strong { font-size: 1rem; }
+        .bar .date { font-size: 0.8rem; color: var(--muted); margin-right: auto; }
+        .bar button, .bar a { font: inherit; font-size: 0.8rem; padding: 4px 10px; border: 1px solid var(--fg); background: var(--bg); color: var(--fg); cursor: pointer; text-decoration: none; white-space: nowrap; }
+        .bar button[aria-pressed=true] { background: var(--fg); color: var(--bg); }
+        .bar button:disabled { opacity: 0.35; cursor: default; }
+        .reader iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+        body.reading { overflow: hidden; }
         .empty code { background: var(--soft); padding: 2px 6px; }
         @media (max-width: 600px) {
             .week { grid-template-columns: 1fr; }
@@ -74,6 +84,20 @@
     <div class="chips" id="chips"></div>
     <div class="status" id="status"></div>
     <div id="list"></div>
+</div>
+
+<div class="reader" id="reader" hidden>
+    <div class="bar">
+        <button id="r-close">← Library</button>
+        <strong id="r-title"></strong>
+        <span class="date" id="r-date"></span>
+        <button id="r-prev">‹ Previous</button>
+        <button id="r-next">Next ›</button>
+        <button id="r-read"></button>
+        <button id="r-star"></button>
+        <a id="r-ext" target="_blank" rel="noopener">Original ↗</a>
+    </div>
+    <iframe id="r-frame" title="Issue text"></iframe>
 </div>
 
 <script>
@@ -158,6 +182,8 @@ function toggleTopic(t) { selected.has(t) ? selected.delete(t) : selected.add(t)
 $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) toggleTopic(b.dataset.t); });
 for (const el of [$('list'), $('today')]) el.addEventListener('click', e => {
     const tag = e.target.closest('.tag'); if (tag) return toggleTopic(tag.dataset.t);
+    const link = e.target.closest('a.title');
+    if (link && !(e.ctrlKey || e.metaKey || e.shiftKey)) { e.preventDefault(); return openReader(+link.closest('.week').dataset.n); }
     const b = e.target.closest('button[data-a]'); if (!b) return;
     const s = u(b.closest('.week').dataset.n); s[b.dataset.a] = !s[b.dataset.a]; save(); render();
 });
@@ -166,6 +192,39 @@ for (const el of [$('list'), $('today')]) el.addEventListener('change', e => {
     u(e.target.closest('.week').dataset.n).note = e.target.value; save(); render();
 });
 ['q', 'year', 'state', 'sort'].forEach(id => $(id).addEventListener('input', render));
+
+// Built-in reader: shows the issue from Baez's site inside this page.
+let reading = 0;
+function openReader(n) {
+    const w = weeks.find(x => x.n === n); if (!w) return;
+    if (reading !== n) $('r-frame').src = w.url;
+    reading = n;
+    $('reader').hidden = false; document.body.classList.add('reading');
+    updateBar();
+}
+function updateBar() {
+    const w = weeks.find(x => x.n === reading), s = user[reading] || {};
+    $('r-title').textContent = `Week ${w.n}`;
+    $('r-date').textContent = w.date || '';
+    $('r-ext').href = w.url;
+    $('r-prev').disabled = reading <= weeks[0].n;
+    $('r-next').disabled = reading >= weeks[weeks.length - 1].n;
+    $('r-read').setAttribute('aria-pressed', !!s.read); $('r-read').textContent = s.read ? 'Read ✓' : 'Mark read';
+    $('r-star').setAttribute('aria-pressed', !!s.star); $('r-star').textContent = s.star ? '★ Starred' : '☆ Star';
+}
+function closeReader() { $('reader').hidden = true; document.body.classList.remove('reading'); }
+$('r-close').addEventListener('click', closeReader);
+$('r-prev').addEventListener('click', () => openReader(reading - 1));
+$('r-next').addEventListener('click', () => openReader(reading + 1));
+for (const a of ['read', 'star']) $('r-' + a).addEventListener('click', () => {
+    const s = u(reading); s[a] = !s[a]; save(); render(); updateBar();
+});
+document.addEventListener('keydown', e => {
+    if ($('reader').hidden || e.target.closest('input, select')) return;
+    if (e.key === 'Escape') closeReader();
+    if (e.key === 'ArrowLeft' && !$('r-prev').disabled) openReader(reading - 1);
+    if (e.key === 'ArrowRight' && !$('r-next').disabled) openReader(reading + 1);
+});
 
 // The data is AES-GCM encrypted; the key comes from the link (#k=...) and is remembered in this browser.
 const KEY_STORE = 'twf-library-key';
