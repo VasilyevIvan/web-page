@@ -367,12 +367,14 @@ margin-bottom: 0;
 text-align: right;
 }
 /* Styling for links within research-list h3 elements */
-.research-list h3 a {
+.research-list h3 a,
+.fine-print a {
 text-decoration: none; /* No underline by default */
 color: var(--primary-color); /* Links are black */
 transition: color 0.3s ease, text-decoration 0.3s ease;
 }
-.research-list h3 a:hover {
+.research-list h3 a:hover,
+.fine-print a:hover {
 color: var(--gray); /* Change color to gray on hover */
 text-decoration: underline; /* Add underline on hover */
 }
@@ -381,13 +383,6 @@ color: var(--primary-color);
 font-style: italic;
 margin-bottom: 10px;
 display: block;
-}
-.fine-print a {
-color: var(--primary-color);
-transition: color 0.3s ease;
-}
-.fine-print a:hover {
-color: var(--gray);
 }
 .fine-print {
 font-size: 0.9em; /* Smaller font size */
