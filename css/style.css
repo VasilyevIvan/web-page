@@ -382,6 +382,13 @@ font-style: italic;
 margin-bottom: 10px;
 display: block;
 }
+.fine-print a {
+color: var(--primary-color);
+transition: color 0.3s ease;
+}
+.fine-print a:hover {
+color: var(--gray);
+}
 .fine-print {
 font-size: 0.9em; /* Smaller font size */
 color: var(--gray); /* Subdued color */
