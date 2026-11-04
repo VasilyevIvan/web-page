@@ -11,35 +11,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet">
     <style>
         .notes-page {
-            padding: 80px 0;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
         }
-        .notes-page .research-list li {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 20px;
+        .notes-page h1 {
+            font-size: 1.6rem;
+            margin-bottom: 32px;
+            text-transform: uppercase;
         }
-        @media (max-width: 600px) {
-            .notes-page .research-list li {
-                flex-direction: column;
-                gap: 4px;
-            }
+        .notes-page h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 28px 0 8px;
+        }
+        .notes-page ul {
+            list-style: none;
+        }
+        .notes-page li {
+            padding: 4px 0;
+        }
+        .notes-page li a {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        .notes-page li a:hover {
+            color: var(--gray);
+        }
+        .notes-page .fine-print {
+            display: inline;
         }
     </style>
 </head>
 <body>
 <main class="notes-page">
-    <div class="container">
-        <h1 class="section-title">Notes</h1>
+    <h1>Notes</h1>
 
-        <h3 class="research-group-title">Introduction to Algebraic K-Theory Seminar · Winter Semester 2026/27</h3>
-        <ul class="research-list">
-            <li>
-                <h3><a href="k-theory-seminar/talk-00-algebraic-k-theory.pdf" target="_blank">Talk 0: Algebraic K-theory</a></h3>
-                <p class="fine-print">Anish and Maxime</p>
-            </li>
-        </ul>
-    </div>
+    <h2>Introduction to Algebraic K-Theory Seminar, WS 26-27</h2>
+    <ul>
+        <li><a href="k-theory-seminar/talk-00-algebraic-k-theory.pdf" target="_blank">Talk 0: Algebraic K-theory</a> <span class="fine-print">(Anish and Maxime)</span></li>
+    </ul>
 </main>
 </body>
 </html>
