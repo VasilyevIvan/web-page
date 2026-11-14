@@ -106,6 +106,8 @@ let user = {};
 try { user = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(user)); } catch (e) {} };
 const u = n => (user[n] ||= {});
+// Ask the browser not to clear this site's storage when space runs low.
+try { navigator.storage?.persist?.(); } catch (e) {}
 
 let weeks = [], topics = {};
 const selected = new Set();
