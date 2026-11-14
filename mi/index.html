@@ -85,7 +85,7 @@
         </select>
     </div>
     <div class="group"><h3>Type</h3><div class="chips" id="types"></div></div>
-    <div class="group" id="columns-group" hidden><h3>Column</h3><div class="chips" id="columns"></div></div>
+    <div class="group"><h3>Column</h3><div class="chips" id="columns"></div></div>
     <div class="group"><h3>Topic</h3><div class="chips" id="rubrics"></div></div>
     <div class="group" id="math-group" hidden><h3>Field</h3><div class="chips" id="math"></div></div>
     <div class="status" id="status"></div>
@@ -122,7 +122,6 @@ function renderChips() {
     chipRow($('rubrics'), 'rubric', Object.entries(meta.rubrics).map(([k, v]) => [k, esc(v), tp[k]]));
     chipRow($('math'), 'math', Object.entries(meta.math).sort((a, b) => (tp[b[0]] || 0) - (tp[a[0]] || 0))
         .map(([k, v]) => [k, `<b>math.${k}</b> ${esc(v)}`, tp[k]]));
-    $('columns-group').hidden = !sel.type.has('col');
     $('math-group').hidden = !sel.rubric.has('M');
     const any = Object.values(sel).some(s => s.size);
     if (any) $('rubrics').insertAdjacentHTML('beforeend', '<button class="clear" id="clear">Clear filters</button>');
@@ -198,7 +197,6 @@ function renderToday() {
 
 function toggle(g, k) {
     sel[g].has(k) ? sel[g].delete(k) : sel[g].add(k);
-    if (g === 'type' && !sel.type.has('col')) sel.column.clear();
     if (g === 'rubric' && !sel.rubric.has('M')) sel.math.clear();
     shown = PAGE; renderChips(); render();
 }
