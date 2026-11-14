@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligencer Library</title>
+    <meta name="description" content="A personal, classified index of The Mathematical Intelligencer.">
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --fg: #000; --bg: #fff; --muted: #666; --line: #e0e0e0; --soft: #f5f5f5; }
+        body { font-family: 'Montserrat', sans-serif; line-height: 1.6; color: var(--fg); background: var(--bg); }
+        .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 16px 64px; }
+        header { border-bottom: 2px solid var(--fg); padding-bottom: 16px; margin-bottom: 24px; }
+        h1 { font-size: 1.8rem; font-weight: 700; }
+        header p { color: var(--muted); font-size: 0.9rem; }
+        header a { color: inherit; }
+        .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .controls input, .controls select { font: inherit; font-size: 0.9rem; padding: 8px 10px; border: 1px solid var(--fg); background: var(--bg); }
+        .controls input[type=search] { flex: 1 1 240px; min-width: 0; }
+        .group { display: grid; grid-template-columns: 70px 1fr; gap: 8px; margin-bottom: 10px; }
+        .group[hidden] { display: none; }
+        .group h3 { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-top: 5px; }
+        .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .chip { font: inherit; font-size: 0.78rem; padding: 4px 10px; border: 1px solid var(--fg); background: var(--bg); cursor: pointer; }
+        .chip[aria-pressed=true] { background: var(--fg); color: var(--bg); }
+        .chip span { opacity: 0.6; margin-left: 4px; }
+        .chip b { font-weight: 600; }
+        .clear { font: inherit; font-size: 0.78rem; padding: 4px 10px; border: 1px dashed var(--muted); background: transparent; color: var(--muted); cursor: pointer; }
+        .status { font-size: 0.85rem; color: var(--muted); margin: 16px 0 12px; }
+        .issue-head { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 18px 0 6px; border-bottom: 2px solid var(--fg); }
+        .item { border-top: 1px solid var(--line); padding: 14px 0; display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 12px; }
+        .item.read .body { opacity: 0.55; }
+        .num { font-weight: 700; font-size: 1.05rem; }
+        .num small { display: block; font-weight: 400; font-size: 0.72rem; color: var(--muted); }
+        .item a.title { color: var(--fg); font-weight: 600; text-decoration: none; }
+        .item a.title:hover { text-decoration: underline; }
+        .sub { font-size: 0.86rem; }
+        .authors { font-size: 0.82rem; color: var(--muted); margin: 2px 0 6px; }
+        .authors button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; text-decoration: underline dotted; }
+        .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+        .tag { font: inherit; font-size: 0.7rem; padding: 1px 6px; background: var(--soft); border: 1px solid var(--line); cursor: pointer; }
+        .tag.kind { background: var(--bg); border-color: var(--fg); }
+        .note { width: 100%; font: inherit; font-size: 0.8rem; margin-top: 6px; padding: 4px 6px; border: 1px dashed var(--line); background: transparent; }
+        .actions { display: flex; flex-direction: column; gap: 4px; }
+        .actions button, .more { font: inherit; font-size: 0.75rem; padding: 3px 8px; border: 1px solid var(--fg); background: var(--bg); cursor: pointer; white-space: nowrap; }
+        .actions button[aria-pressed=true] { background: var(--fg); color: var(--bg); }
+        .more { display: block; margin: 20px auto 0; padding: 8px 18px; font-size: 0.85rem; }
+        .empty { padding: 40px 0; color: var(--muted); }
+        .today { border: 2px solid var(--fg); padding: 4px 16px 0; margin-bottom: 24px; }
+        .today h2 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding-top: 10px; }
+        .today .item { border-top: 0; }
+        @media (max-width: 600px) {
+            .item { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+            .num small { display: inline; margin-left: 8px; }
+            .actions { flex-direction: row; }
+            .group { grid-template-columns: 1fr; gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <h1>The Mathematical Intelligencer — Library</h1>
+        <p>Every item of <a href="https://link.springer.com/journal/283">The Mathematical Intelligencer</a> since 1977, by type, column and topic. Titles open the article on Springer. Read marks, stars and notes are saved in this browser only.</p>
+    </header>
+
+    <section class="today" id="today" hidden aria-label="Today's article"></section>
+
+    <div class="controls">
+        <input type="search" id="q" placeholder="Search title, author, column, your notes…" aria-label="Search">
+        <select id="decade" aria-label="Decade"><option value="">All years</option></select>
+        <select id="state" aria-label="Reading state">
+            <option value="">All items</option>
+            <option value="unread">Unread</option>
+            <option value="read">Read</option>
+            <option value="star">Starred</option>
+            <option value="note">With notes</option>
+        </select>
+        <select id="view" aria-label="Order">
+            <option value="desc">Newest first</option>
+            <option value="asc">Oldest first</option>
+            <option value="issue">By issue</option>
+        </select>
+    </div>
+    <div class="group"><h3>Type</h3><div class="chips" id="types"></div></div>
+    <div class="group" id="columns-group" hidden><h3>Column</h3><div class="chips" id="columns"></div></div>
+    <div class="group"><h3>Topic</h3><div class="chips" id="rubrics"></div></div>
+    <div class="group" id="math-group" hidden><h3>Field</h3><div class="chips" id="math"></div></div>
+    <div class="status" id="status"></div>
+    <div id="list"><p class="empty">Loading…</p></div>
+</div>
+
+<script>
+const KEY = 'mi-library-v1';
+let user = {};
+try { user = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(user)); } catch (e) {} };
+const u = doi => (user[doi] ||= {});
+// Ask the browser not to clear this site's storage when space runs low.
+try { navigator.storage?.persist?.(); } catch (e) {}
+
+let items = [], meta = {}, byDoi = {}, issueYear = {};
+const sel = { type: new Set(), column: new Set(), rubric: new Set(), math: new Set() };
+const PAGE = 200;
+let shown = PAGE;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const where = x => [x.vol && `Vol. ${x.vol}`, x.issue && `No. ${x.issue}`].filter(Boolean).join(' · ');
+
+function chipRow(el, group, entries) {
+    el.innerHTML = entries.filter(([, , n]) => n).map(([k, label, n]) =>
+        `<button class="chip" data-g="${group}" data-k="${esc(k)}" aria-pressed="${sel[group].has(k)}">${label}<span>${n}</span></button>`).join('');
+}
+
+function renderChips() {
+    const count = f => { const c = {}; items.forEach(x => f(x).forEach(k => c[k] = (c[k] || 0) + 1)); return c; };
+    const t = count(x => [x.type]), col = count(x => x.column ? [x.column] : []), tp = count(x => x.topics);
+    chipRow($('types'), 'type', Object.entries(meta.types).map(([k, v]) => [k, esc(v), t[k]]));
+    chipRow($('columns'), 'column', Object.keys(col).sort().map(k => [k, esc(k), col[k]]));
+    chipRow($('rubrics'), 'rubric', Object.entries(meta.rubrics).map(([k, v]) => [k, esc(v), tp[k]]));
+    chipRow($('math'), 'math', Object.entries(meta.math).sort((a, b) => (tp[b[0]] || 0) - (tp[a[0]] || 0))
+        .map(([k, v]) => [k, `<b>math.${k}</b> ${esc(v)}`, tp[k]]));
+    $('columns-group').hidden = !sel.type.has('col');
+    $('math-group').hidden = !sel.rubric.has('M');
+    const any = Object.values(sel).some(s => s.size);
+    if (any) $('rubrics').insertAdjacentHTML('beforeend', '<button class="clear" id="clear">Clear filters</button>');
+}
+
+function matches(x) {
+    const s = user[x.doi] || {}, q = $('q').value.trim().toLowerCase(), dec = $('decade').value, st = $('state').value;
+    if (dec && Math.floor(x.year / 10) * 10 !== +dec) return false;
+    if (st === 'read' && !s.read || st === 'unread' && s.read || st === 'star' && !s.star || st === 'note' && !s.note) return false;
+    if (sel.type.size && !sel.type.has(x.type)) return false;
+    if (sel.column.size && !sel.column.has(x.column)) return false;
+    for (const k of sel.rubric) if (!x.topics.includes(k)) return false;
+    for (const k of sel.math) if (!x.topics.includes(k)) return false;
+    if (q && !(x.title + ' ' + x.sub + ' ' + x.authors.join(' ') + ' ' + (x.column || '') + ' ' + x.year + ' ' + (s.note || '')).toLowerCase().includes(q)) return false;
+    return true;
+}
+
+function card(x) {
+    const s = user[x.doi] || {};
+    const tags = [`<button class="tag kind" data-g="type" data-k="${x.type}">${esc(meta.types[x.type])}</button>`]
+        .concat(x.column ? [`<button class="tag kind" data-g="column" data-k="${esc(x.column)}">${esc(x.column)}</button>`] : [])
+        .concat(x.topics.filter(t => meta.rubrics[t]).map(t => `<button class="tag" data-g="rubric" data-k="${t}">${esc(meta.rubrics[t])}</button>`))
+        .concat(x.topics.filter(t => meta.math[t]).map(t => `<button class="tag" data-g="math" data-k="${t}" title="${esc(meta.math[t])}">math.${t}</button>`));
+    return `<article class="item${s.read ? ' read' : ''}" data-doi="${esc(x.doi)}">
+        <div class="num">${x.year}<small>${esc(where(x))}</small></div>
+        <div class="body">
+            <a class="title" href="https://doi.org/${esc(x.doi)}" target="_blank" rel="noopener">${esc(x.title)}</a>
+            ${x.sub ? `<div class="sub">${esc(x.sub)}</div>` : ''}
+            <div class="authors">${x.authors.map(a => `<button data-author="${esc(a)}">${esc(a)}</button>`).join(', ')}</div>
+            <div class="tags">${tags.join('')}</div>
+            <input class="note" placeholder="Your note…" aria-label="Note" value="${esc(s.note || '')}">
+        </div>
+        <div class="actions">
+            <button data-a="read" aria-pressed="${!!s.read}">${s.read ? 'Read ✓' : 'Mark read'}</button>
+            <button data-a="star" aria-pressed="${!!s.star}">${s.star ? '★ Starred' : '☆ Star'}</button>
+        </div>
+    </article>`;
+}
+
+function render() {
+    let rows = items.filter(matches);
+    const view = $('view').value;
+    if (view !== 'asc') rows = rows.slice().reverse();
+    if (view === 'issue') rows.sort((a, b) => (+b.vol || 0) - (+a.vol || 0) || (+b.issue || 0) - (+a.issue || 0) || (parseInt(a.page) || 0) - (parseInt(b.page) || 0));
+    const read = items.filter(x => user[x.doi]?.read).length;
+    $('status').textContent = `${rows.length} of ${items.length} items shown · ${read} read`;
+    let html = '', last = null;
+    for (const x of rows.slice(0, shown)) {
+        const head = `${where(x) || 'No volume'} · ${issueYear[where(x)]}`;
+        if (view === 'issue' && head !== last) { html += `<h2 class="issue-head">${esc(head)}</h2>`; last = head; }
+        html += card(x);
+    }
+    if (rows.length > shown) html += `<button class="more" id="more">Show ${Math.min(PAGE, rows.length - shown)} more</button>`;
+    $('list').innerHTML = html || '<p class="empty">No items match these filters.</p>';
+    renderToday();
+}
+
+// One article per day: picked at random from the unread ones, then kept for the rest of that day.
+const TODAY_KEY = 'mi-library-today';
+function renderToday() {
+    const d = new Date(), date = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(TODAY_KEY)); } catch (e) {}
+    let x = saved?.date === date && byDoi[saved.doi];
+    if (!x) {
+        const pool = items.filter(i => (i.type === 'art' || i.type === 'col') && !user[i.doi]?.read);
+        x = pool[Math.floor(Math.random() * pool.length)];
+        try { localStorage.setItem(TODAY_KEY, JSON.stringify({ date, doi: x.doi })); } catch (e) {}
+    }
+    $('today').hidden = false;
+    $('today').innerHTML = `<h2>Today's article</h2>` + card(x);
+}
+
+function toggle(g, k) {
+    sel[g].has(k) ? sel[g].delete(k) : sel[g].add(k);
+    if (g === 'type' && !sel.type.has('col')) sel.column.clear();
+    if (g === 'rubric' && !sel.rubric.has('M')) sel.math.clear();
+    shown = PAGE; renderChips(); render();
+}
+
+document.querySelectorAll('.group').forEach(el => el.addEventListener('click', e => {
+    if (e.target.id === 'clear') { Object.values(sel).forEach(s => s.clear()); shown = PAGE; renderChips(); return render(); }
+    const b = e.target.closest('.chip'); if (b) toggle(b.dataset.g, b.dataset.k);
+}));
+for (const el of [$('list'), $('today')]) {
+    el.addEventListener('click', e => {
+        if (e.target.id === 'more') { shown += PAGE; return render(); }
+        const tag = e.target.closest('.tag'); if (tag) return toggle(tag.dataset.g, tag.dataset.k);
+        const au = e.target.closest('[data-author]');
+        if (au) { $('q').value = au.dataset.author; shown = PAGE; render(); return window.scrollTo({ top: $('q').offsetTop - 16 }); }
+        const b = e.target.closest('button[data-a]'); if (!b) return;
+        const s = u(b.closest('.item').dataset.doi); s[b.dataset.a] = !s[b.dataset.a]; save(); render();
+    });
+    el.addEventListener('change', e => {
+        if (!e.target.classList.contains('note')) return;
+        u(e.target.closest('.item').dataset.doi).note = e.target.value; save(); render();
+    });
+}
+['q', 'decade', 'state', 'view'].forEach(id => $(id).addEventListener('input', () => { shown = PAGE; render(); }));
+
+// The data is AES-GCM encrypted; the key comes from the link (#k=...) and is remembered in this browser.
+const KEY_STORE = 'mi-library-key';
+async function loadData() {
+    let k = new URLSearchParams(location.hash.slice(1)).get('k');
+    try { k ? localStorage.setItem(KEY_STORE, k) : (k = localStorage.getItem(KEY_STORE)); } catch (e) {}
+    if (!k) throw 0;
+    const b64 = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+    const enc = await (await fetch('data/items.enc')).json();
+    const key = await crypto.subtle.importKey('raw', b64(k), 'AES-GCM', false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(enc.iv) }, key, b64(enc.data));
+    return JSON.parse(new TextDecoder().decode(plain));
+}
+
+loadData().then(d => {
+    items = d.items || []; meta = d;
+    if (!items.length) throw 0;
+    items.forEach(x => { byDoi[x.doi] = x; issueYear[where(x)] = Math.max(issueYear[where(x)] || 0, x.year); });
+    [...new Set(items.map(x => Math.floor(x.year / 10) * 10))].sort()
+        .forEach(y => $('decade').insertAdjacentHTML('beforeend', `<option value="${y}">${y}s</option>`));
+    renderChips(); render();
+}).catch(() => {
+    $('list').innerHTML = `<p class="empty">This page needs its full access link to open.</p>`;
+});
+</script>
+</body>
+</html>

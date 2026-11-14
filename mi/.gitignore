@@ -1,0 +1,5 @@
+cache/
+__pycache__/
+# plaintext stays local; only items.enc is published
+labels.txt
+data/items.json
