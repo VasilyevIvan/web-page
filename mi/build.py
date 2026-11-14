@@ -11,6 +11,7 @@ items missing there, from a previous mi/data/items.json. Codes:
   H P C F A L R E S   topic rubrics (see RUBRICS)
   NT, GT, AG, ...     arXiv math classes; they imply "M" (Mathematics itself)
   =rev, =int, ...     correct the detected type (see TYPES)
+  @tour, @stamp       put the item in a column (see COLUMN_CODES)
 
 Usage:  python3 mi/build.py            # fetch what's missing, rebuild json
         python3 mi/build.py --offline  # only use the cache
@@ -61,6 +62,8 @@ COLUMNS = [  # (regex on the lowercased title, column name)
     (r"^the philamath", "The Philamath's Alphabet"),
     (r"^tales of forgotten genius", "Tales of Forgotten Genius"),
 ]
+# Column pieces since the 2000s carry their own titles, so labels name the column.
+COLUMN_CODES = {"tour": "The Mathematical Tourist", "stamp": "Stamp Corner"}
 # Topic for items whose title says nothing beyond the column or genre name.
 DEFAULT_TOPIC = {
     "Years Ago": ["H"], "Mathematical Entertainments": ["R"], "Problem Corner": ["R"],
@@ -109,6 +112,10 @@ def detect_type(title, sub):
     for rx, name in COLUMNS:
         if re.match(rx, lt):
             return "col", name
+    if re.search(r"mathematical touris[mt]", lt):
+        return "col", "The Mathematical Tourist"
+    if re.search(r"\bstamps?\b|philately", lt):
+        return "col", "Stamp Corner"
     if re.match(r"^(opinion|viewpoint)\b", lt):
         return "opi", None
     if re.match(r"^editorial", lt) or lt in ("dedication", "introduction", "preface"):
@@ -128,7 +135,8 @@ def load_labels():
     labels = {}
     if OUT.exists():  # earlier build: keeps labels when labels.txt is absent
         for x in json.loads(OUT.read_text(encoding="utf-8"))["items"]:
-            labels[x["doi"].lower()] = x["topics"] + ["=" + x["type"]] if x.get("labelled") else None
+            col = [f"@{k}" for k, v in COLUMN_CODES.items() if v == x["column"]]
+            labels[x["doi"].lower()] = x["topics"] + ["=" + x["type"]] + col if x.get("labelled") else None
     if LABELS.exists():
         for line in LABELS.read_text(encoding="utf-8").splitlines():
             doi, *codes = line.split()
@@ -148,19 +156,25 @@ def main():
         topics = []
         if codes:
             for c in codes:
-                if c.startswith("="):
+                if c.startswith("@"):
+                    kind, column = "col", COLUMN_CODES[c[1:]]
+                elif c.startswith("="):
                     kind = c[1:] if not column else kind
                 elif c in RUBRICS or c in MATH:
                     topics.append(c)
         else:
             unlabelled += 1
             topics = list(DEFAULT_TOPIC.get(column or kind, []))
+        authors = [clean(" ".join(filter(None, [a.get("given"), a.get("family")]))) or clean(a.get("name"))
+                   for a in x.get("author", [])]
+        if not column and kind in ("fic", "poe") and ("Colin Adams" in authors or "Colin C. Adams" in authors
+                                                     or sub.startswith("Edited by Colin Adams")):
+            column = "Mathematically Bent"  # Colin Adams's humor column
         if any(c in MATH for c in topics) and "M" not in topics:
             topics.append("M")
         items.append({
             "doi": x["DOI"], "title": title, "sub": "" if BOOKINFO.search(sub) else sub,
-            "authors": [clean(" ".join(filter(None, [a.get("given"), a.get("family")]))) or clean(a.get("name"))
-                        for a in x.get("author", [])],
+            "authors": authors,
             "year": x["issued"]["date-parts"][0][0], "vol": x.get("volume", ""), "issue": x.get("issue", ""),
             "page": x.get("page", ""), "type": kind, "column": column, "topics": topics, "labelled": bool(codes),
         })
