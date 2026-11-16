@@ -96,6 +96,83 @@
             overflow-y: hidden;
             padding: 4px 0;
         }
+        .library-breadcrumb {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gray);
+            margin: -40px 0 24px;
+            text-align: center;
+        }
+        .library-breadcrumb a {
+            color: var(--primary-color);
+        }
+        .library-breadcrumb a:hover {
+            color: var(--gray);
+        }
+        .library-list {
+            list-style: none;
+            margin-top: 8px;
+        }
+        .library-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 1.05rem;
+        }
+        .library-list li a {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        .library-list li a:hover {
+            color: var(--gray);
+        }
+        .library-list .fine-print {
+            display: inline;
+            margin: 0;
+        }
+        #library-results .library-section > h1 {
+            display: none;
+        }
+        .library-area-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin: 12px 0 12px;
+        }
+        .library-intro p,
+        .library-intro ul,
+        .library-intro ol {
+            margin: 8px 0;
+        }
+        .library-intro ul,
+        .library-intro ol {
+            padding-left: 22px;
+        }
+        .library-intro a {
+            color: var(--primary-color);
+        }
+        .library-subheading {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 28px 0 4px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .library-source {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin: 24px 0 0;
+        }
+        .library-source a {
+            color: var(--primary-color);
+        }
+        .library-status:empty {
+            display: none;
+        }
         .library-empty {
             color: var(--gray);
             font-size: 0.9rem;
@@ -110,15 +187,18 @@
 <main class="library-page">
     <h1 class="section-title">Library</h1>
 
+    <nav class="library-breadcrumb" aria-label="Breadcrumb"></nav>
+
     <input class="library-search" type="search" placeholder="Search entries, tags, formulas…" aria-label="Search the library">
     <p class="library-status" aria-live="polite"></p>
 
-    <div id="library-content"></div>
+    <div id="library-view"></div>
+    <div id="library-results" hidden></div>
 </main>
 
 <script src="vendor/katex/katex.min.js"></script>
 <script src="vendor/marked/marked.umd.js"></script>
 <script src="vendor/marked/marked-katex-extension.umd.js"></script>
-<script src="library.js?v=20261116-1"></script>
+<script src="library.js?v=20261116-2"></script>
 </body>
 </html>
