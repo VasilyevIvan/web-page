@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library | Ivan Vasilev</title>
+    <!-- Unlisted page: not linked from the site, kept out of search engines -->
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/jpeg" href="../images/profile.jpg">
+    <link rel="stylesheet" href="../css/style.css?v=20261116-1">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="vendor/katex/katex.min.css">
+    <style>
+        .library-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        .library-search {
+            width: 100%;
+            font: inherit;
+            font-size: 0.95rem;
+            padding: 10px 14px;
+            border: 2px solid var(--primary-color);
+            margin-bottom: 8px;
+        }
+        .library-status {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+        }
+        .library-section {
+            padding: 0;
+            min-height: 0;
+        }
+        .library-section > h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin: 36px 0 4px;
+        }
+        .library-section h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 28px 0 10px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .library-entry {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .library-entry h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .library-entry h3 a.entry-anchor {
+            color: var(--light-gray);
+            text-decoration: none;
+            margin-left: 6px;
+            font-weight: 400;
+        }
+        .library-entry h3 a.entry-anchor:hover {
+            color: var(--gray);
+        }
+        .library-entry p,
+        .library-entry ul,
+        .library-entry ol,
+        .library-entry blockquote {
+            margin: 6px 0;
+        }
+        .library-entry ul,
+        .library-entry ol {
+            padding-left: 22px;
+        }
+        .library-entry a {
+            color: var(--primary-color);
+        }
+        .library-entry a:hover {
+            color: var(--gray);
+        }
+        .library-entry blockquote {
+            border-left: 3px solid var(--light-gray);
+            padding-left: 12px;
+            color: #555;
+        }
+        .library-entry code {
+            font-size: 0.9em;
+            background: #f4f4f4;
+            padding: 1px 4px;
+        }
+        .library-entry .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 4px 0;
+        }
+        .library-empty {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        [hidden] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<main class="library-page">
+    <h1 class="section-title">Library</h1>
+
+    <input class="library-search" type="search" placeholder="Search entries, tags, formulas…" aria-label="Search the library">
+    <p class="library-status" aria-live="polite"></p>
+
+    <div id="library-content"></div>
+</main>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="vendor/marked/marked.umd.js"></script>
+<script src="vendor/marked/marked-katex-extension.umd.js"></script>
+<script src="library.js?v=20261116-1"></script>
+</body>
+</html>
