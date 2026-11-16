@@ -1,0 +1,1 @@
+**Now (WS 26-27):** I am a teaching assistant for *Topology I* at the University of Münster. The semester page collects posts from blogs, MathOverflow and Math.StackExchange that I find useful for the course, with my comments.
