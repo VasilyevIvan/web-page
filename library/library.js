@@ -104,7 +104,7 @@ function slugify(text) {
 }
 
 function openExternalLinksInNewTab(root) {
-    root.querySelectorAll('a[href^="http"]').forEach(a => {
+    root.querySelectorAll('a[href^="http"], a[href$=".pdf"]').forEach(a => {
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
     });
