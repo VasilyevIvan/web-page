@@ -15,7 +15,7 @@ const AREAS = [
                 subtitle: 'Topology I (teaching assistant)',
                 posts: [
                     { id: 'sheet-0', title: 'Sheet 0', subtitle: 'Topological spaces' },
-                    { id: 'sheet-1', title: 'Sheet 1' },
+                    { id: 'sheet-1', title: 'Sheet 1', subtitle: 'Posets and adjunctions' },
                     { id: 'sheet-2', title: 'Sheet 2' },
                     { id: 'sheet-3', title: 'Sheet 3' },
                     { id: 'sheet-4', title: 'Sheet 4' }
