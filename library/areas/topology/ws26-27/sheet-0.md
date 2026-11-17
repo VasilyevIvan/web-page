@@ -12,6 +12,28 @@ Your text with $formulas$.
 Sources: [MathOverflow: question title](https://mathoverflow.net/q/...) · Tags: tag one, tag two
 -->
 
+[Solutions to Sheet 0 (PDF)](areas/topology/ws26-27/sheet-0-solutions.pdf)
+
+### Exercise 5: $D^n/S^{n-1}\cong S^n$
+
+**Exercise 5.** Show that $D^n/S^{n-1}$ and $S^n$ are homeomorphic.
+
+**Second proof (one-point compactification).**
+
+**Lemma.** *Let $K, K'$ be compact Hausdorff spaces, $p\in K$, $p'\in K'$, and $h\colon K\setminus\{p\}\to K'\setminus\{p'\}$ a homeomorphism. Then $h$ extends by $p\mapsto p'$ to a homeomorphism $H\colon K\to K'$.*
+
+That is, $K$ is the one-point compactification of $K\setminus\{p\}$, which is unique up to homeomorphism.
+
+*Proof.* Both $S^n$ and $D^n/S^{n-1}$ are compact Hausdorff. Stereographic projection and $x\mapsto \frac{x}{1-|x|}$ give
+
+$$S^n\setminus\{*\}\cong\mathbb{R}^n\cong\operatorname{int}(D^n)\cong\left(D^n/S^{n-1}\right)\setminus\{*\},$$
+
+so the lemma applies. $\square$
+
+*Comments to follow.*
+
+Sources: [Sheet 0 solutions (PDF)](areas/topology/ws26-27/sheet-0-solutions.pdf) · Tags: one-point compactification, quotient spaces, spheres, stereographic projection
+
 ### What concept does an open set axiomatise?
 
 *Draft, to be continued.*
